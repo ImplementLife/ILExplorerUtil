@@ -17,9 +17,14 @@ import java.util.List;
 
 import static il.util.explorer.setvices.Util.bytesToMegabytes;
 
-public class DetailedUI {
+public class ScannerTab {
     private JTree tree;
     private JPanel root;
+    private int maxMb = 100;
+
+    public void setMaxMb(int maxMb) {
+        this.maxMb = maxMb;
+    }
 
     private static class TreeNodeFI {
         private FileInfo fi;
@@ -81,7 +86,7 @@ public class DetailedUI {
                                 if (file.exists()) {
                                     ScannerService scannerService = new ScannerService();
                                     FileInfo scan = scannerService.scan(nodePath);
-                                    if (bytesToMegabytes(scan.getSize()) > 10) {
+                                    if (bytesToMegabytes(scan.getSize()) > maxMb) {
                                         fillTree(scan, selectedNode);
                                         tree.repaint();
                                     }
@@ -108,7 +113,7 @@ public class DetailedUI {
         List<FileInfo> children = rootFI.getChildren();
         if (children != null && children.size() > 0) {
             for (FileInfo child : children) {
-                if (bytesToMegabytes(child.getSize()) > 10) {
+                if (bytesToMegabytes(child.getSize()) > maxMb) {
                     DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFI(child));
                     rootNode.add(node);
                     fillTree(child, node);
