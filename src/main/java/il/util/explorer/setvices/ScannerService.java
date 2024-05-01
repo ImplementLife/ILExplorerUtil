@@ -1,6 +1,6 @@
 package il.util.explorer.setvices;
 
-import il.util.explorer.dto.FI;
+import il.util.explorer.dto.FileInfo;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -10,29 +10,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class ScannerService {
-    public FI scan(String path) {
+    public FileInfo scan(String path) {
         File file = new File(path);
         if (!file.exists()) {
             throw new IllegalArgumentException("Path [" + path + "] is not valid");
         }
 
         System.out.println("Scan for: " + path);
-        FI treeFI = getTreeFI(file);
+        FileInfo treeFI = getTreeFI(file);
         treeFI.setName(file.getName());
         System.out.println("Done");
         return treeFI;
     }
 
-    private FI getTreeFI(File file) {
+    private FileInfo getTreeFI(File file) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null) return null;
 
             long size = 0;
-            FI fi = new FI(file.getAbsolutePath(), file.getName());
+            FileInfo fi = new FileInfo(file.getAbsolutePath(), file.getName());
 
             for (File childFile : files) {
-                FI child = getTreeFI(childFile);
+                FileInfo child = getTreeFI(childFile);
                 if (child == null) continue;
 
                 long childSize = child.getSize();
@@ -46,10 +46,10 @@ public class ScannerService {
 //            long megabytes = bytesToMegabytes(size);
 //            if (megabytes > 100) {
                 fi.setSize(size);
-                List<FI> children = fi.getChildren();
+                List<FileInfo> children = fi.getChildren();
                 if (children != null) {
-                    List<FI> sortedChildren = children.stream()
-                        .sorted(Comparator.comparing(FI::getSize).reversed())
+                    List<FileInfo> sortedChildren = children.stream()
+                        .sorted(Comparator.comparing(FileInfo::getSize).reversed())
                         .collect(Collectors.toList());
                     fi.setChildren(sortedChildren);
                 }
@@ -57,7 +57,7 @@ public class ScannerService {
 
             return fi;
         } else {
-            return new FI(file.getAbsolutePath(), file.getName(), file.length());
+            return new FileInfo(file.getAbsolutePath(), file.getName(), file.length());
         }
     }
 }

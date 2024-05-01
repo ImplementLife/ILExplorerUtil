@@ -3,25 +3,25 @@ package il.util.explorer.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FI {
+public class FileInfo {
     private String name;
     private final String path;
     private long size;
-    private List<FI> children;
+    private List<FileInfo> children;
 
-    public FI(String path, long size) {
+    public FileInfo(String path, long size) {
         this.path = path;
         this.size = size;
     }
-    public FI(String path, String name, long size) {
+    public FileInfo(String path, String name, long size) {
         this.path = path;
         this.name = name;
         this.size = size;
     }
-    public FI(String path) {
+    public FileInfo(String path) {
         this.path = path;
     }
-    public FI(String path, String name) {
+    public FileInfo(String path, String name) {
         this.path = path;
         this.name = name;
     }
@@ -34,15 +34,15 @@ public class FI {
         return path;
     }
 
-    public List<FI> getChildren() {
+    public List<FileInfo> getChildren() {
         return children;
     }
 
-    public void setChildren(List<FI> children) {
+    public void setChildren(List<FileInfo> children) {
         this.children = children;
     }
 
-    public void addChild(FI child) {
+    public void addChild(FileInfo child) {
         if (children == null) children = new ArrayList<>();
         children.add(child);
     }

@@ -2,7 +2,7 @@ package il.util.explorer.ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import il.util.explorer.dto.FI;
+import il.util.explorer.dto.FileInfo;
 import il.util.explorer.setvices.ScannerService;
 
 import javax.swing.*;
@@ -22,9 +22,9 @@ public class DetailedUI {
     private JPanel root;
 
     private static class TreeNodeFI {
-        private FI fi;
+        private FileInfo fi;
 
-        public TreeNodeFI(FI fi) {
+        public TreeNodeFI(FileInfo fi) {
             this.fi = fi;
         }
 
@@ -34,7 +34,7 @@ public class DetailedUI {
         }
     }
 
-    public void fill(FI rootFI) {
+    public void fill(FileInfo rootFI) {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("{root}");
 
         fillTree(rootFI, rootNode);
@@ -80,7 +80,7 @@ public class DetailedUI {
                                 selectedNode.removeAllChildren();
                                 if (file.exists()) {
                                     ScannerService scannerService = new ScannerService();
-                                    FI scan = scannerService.scan(nodePath);
+                                    FileInfo scan = scannerService.scan(nodePath);
                                     if (bytesToMegabytes(scan.getSize()) > 10) {
                                         fillTree(scan, selectedNode);
                                         tree.repaint();
@@ -102,12 +102,12 @@ public class DetailedUI {
         });
     }
 
-    private void fillTree(FI rootFI, DefaultMutableTreeNode rootNode) {
+    private void fillTree(FileInfo rootFI, DefaultMutableTreeNode rootNode) {
         rootNode.setUserObject(new TreeNodeFI(rootFI));
 
-        List<FI> children = rootFI.getChildren();
+        List<FileInfo> children = rootFI.getChildren();
         if (children != null && children.size() > 0) {
-            for (FI child : children) {
+            for (FileInfo child : children) {
                 if (bytesToMegabytes(child.getSize()) > 10) {
                     DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFI(child));
                     rootNode.add(node);
