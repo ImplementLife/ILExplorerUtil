@@ -6,21 +6,84 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
 public class ScannerService {
+    private long totalSize;
+    private long totalCalculatedSize;
+    private long counter;
+
+    private boolean inProcess;
+    private Consumer<Double> listener;
+
+    public void drawProgressBar(double progress) {
+        int width = 50; // Width of the progress bar
+
+        // Calculate number of characters representing progress
+        int progressChars = (int) (progress * width);
+
+        // Draw progress bar
+        StringBuilder progressBar = new StringBuilder("[");
+        for (int i = 0; i < width; i++) {
+            if (i < progressChars) {
+                progressBar.append("=");
+            } else {
+                progressBar.append(" ");
+            }
+        }
+        progressBar.append("] ");
+        progressBar.append(String.format("%.2f", progress * 100)).append("% ");
+
+        // Print progress bar
+        System.out.print("\r" + progressBar.toString());
+    }
+    public void addProgressListener(Consumer<Double> listener) {
+        this.listener = listener;
+    }
+
     public FileInfo scan(String path) {
         File file = new File(path);
         if (!file.exists()) {
             throw new IllegalArgumentException("Path [" + path + "] is not valid");
         }
+        String[] split = path.split("\\\\");
+        File root = new File(split[0]);
+        totalSize = root.getTotalSpace() - root.getFreeSpace();
+        Thread thread = new Thread(() -> {
+            inProcess = true;
+            while (inProcess) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                double progress = (double) totalCalculatedSize / totalSize;
+                if (inProcess) {
+                    if (listener != null) {
+                        listener.accept(progress);
+                    }
+                    drawProgressBar(progress);
+                }
+            }
+        });
 
         System.out.println("Scan for: " + path);
+        thread.start();
         FileInfo treeFI = getTreeFI(file);
         treeFI.setName(file.getName());
+        inProcess = false;
         System.out.println("Done");
         return treeFI;
+    }
+
+    public long getTotalSize() {
+        return totalSize;
+    }
+
+    public long getTotalCalculatedSize() {
+        return totalCalculatedSize;
     }
 
     private FileInfo getTreeFI(File file) {
@@ -57,6 +120,7 @@ public class ScannerService {
 
             return fi;
         } else {
+            totalCalculatedSize += file.length();
             return new FileInfo(file.getAbsolutePath(), file.getName(), file.length());
         }
     }

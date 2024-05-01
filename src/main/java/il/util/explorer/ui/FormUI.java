@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class FormUI {
@@ -34,25 +35,33 @@ public class FormUI {
     @PostConstruct
     public void init() {
         btnScan.addActionListener(event -> {
-            ScannerTab scannerTab = new ScannerTab();
-            String path = textStartPath.getText();
-            File file = new File(path);
-            if (file.exists() && file.isDirectory()) {
-                try {
-                    int maxMb = Integer.parseInt(textMaxMb.getText());
-                    scannerTab.setMaxMb(maxMb);
-                } catch (NumberFormatException e) {
-                    uiService.showErrDialog(e);
-                }
-                ScannerService scannerService = new ScannerService();
-                FileInfo scan = scannerService.scan(path);
+            CompletableFuture.runAsync(() -> {
+                ScannerTab scannerTab = new ScannerTab();
+                String path = textStartPath.getText();
+                File file = new File(path);
+                if (file.exists() && file.isDirectory()) {
+                    try {
+                        int maxMb = Integer.parseInt(textMaxMb.getText());
+                        scannerTab.setMaxMb(maxMb);
+                    } catch (NumberFormatException e) {
+                        uiService.showErrDialog(e);
+                    }
+                    ScannerService scannerService = new ScannerService();
+                    ProgressWindow dialog = new ProgressWindow();
+                    scannerService.addProgressListener(dialog::updateProgress);
+                    dialog.init();
+                    dialog.setVisible(true);
+                    FileInfo scan = scannerService.scan(path);
 
-                scannerTab.fill(scan);
-                sc.setViewportView(scannerTab.getRoot());
-            } else {
-                uiService.showErrDialog(new Throwable("not valid"));
-                System.out.println("Path don't valid!");
-            }
+                    scannerTab.fill(scan);
+
+                    dialog.setVisible(false);
+                    sc.setViewportView(scannerTab.getRoot());
+                } else {
+                    uiService.showErrDialog(new Throwable("not valid"));
+                    System.out.println("Path don't valid!");
+                }
+            });
         });
         btnChoose.addActionListener(event -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
