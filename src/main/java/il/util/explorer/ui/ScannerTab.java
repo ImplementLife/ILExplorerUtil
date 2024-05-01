@@ -26,10 +26,10 @@ public class ScannerTab {
         this.maxMb = maxMb;
     }
 
-    private static class TreeNodeFI {
+    private static class TreeNodeFileInfo {
         private FileInfo fi;
 
-        public TreeNodeFI(FileInfo fi) {
+        public TreeNodeFileInfo(FileInfo fi) {
             this.fi = fi;
         }
 
@@ -58,47 +58,17 @@ public class ScannerTab {
                         JPopupMenu menu = new JPopupMenu();
 
                         JMenuItem showInExplorerItem = new JMenuItem("Show in Explorer");
-                        showInExplorerItem.addActionListener(e1 -> {
-                            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                            if (selectedNode != null) {
-                                TreeNodeFI node = (TreeNodeFI) selectedNode.getUserObject();
-                                String nodePath = node.fi.getPath();
-                                if (nodePath != null) {
-                                    try {
-                                        Runtime.getRuntime().exec("explorer.exe /select," + nodePath);
-                                    } catch (IOException ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
+                        setShowInExplorerAction(showInExplorerItem);
                         menu.add(showInExplorerItem);
 
                         JMenuItem refresh = new JMenuItem("Refresh");
-                        refresh.addActionListener(e1 -> {
-                            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                            if (selectedNode != null) {
-                                TreeNodeFI node = (TreeNodeFI) selectedNode.getUserObject();
-                                String nodePath = node.fi.getPath();
-
-                                File file = new File(nodePath);
-                                selectedNode.removeAllChildren();
-                                if (file.exists()) {
-                                    ScannerService scannerService = new ScannerService();
-                                    FileInfo scan = scannerService.scan(nodePath);
-                                    if (bytesToMegabytes(scan.getSize()) > maxMb) {
-                                        fillTree(scan, selectedNode);
-                                        tree.repaint();
-                                    }
-                                } else {
-                                    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
-                                    parent.remove(parent.getIndex(selectedNode));
-                                    System.out.println("Path don't valid!");
-                                }
-
-                            }
-                        });
+                        setRefreshAction(refresh);
                         menu.add(refresh);
+
+                        menu.addSeparator();
+                        JMenuItem delete = new JMenuItem("Delete");
+                        setDeleteAction(delete);
+                        menu.add(delete);
 
                         menu.show(tree, e.getX(), e.getY());
                     }
@@ -107,14 +77,101 @@ public class ScannerTab {
         });
     }
 
+    private void setDeleteAction(JMenuItem item) {
+        item.addActionListener(e1 -> {
+            int result = JOptionPane.showConfirmDialog(root, "Do you Confirm DELETE?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+
+            if (result == JOptionPane.YES_OPTION) {
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                if (selectedNode != null) {
+                    TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
+                    String nodePath = node.fi.getPath();
+                    if (nodePath != null) {
+                        File fileToDelete = new File(nodePath);
+                        if (fileToDelete.isDirectory()) {
+                            File[] files = fileToDelete.listFiles();
+                            if (files != null && files.length > 0) {
+                                delete(files);
+                            }
+                        }
+                        boolean delete = fileToDelete.delete();
+
+                        if (delete) {
+                            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
+                            parent.remove(selectedNode);
+                            selectedNode.setParent(null);
+                            tree.updateUI();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void delete(File[] files) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                File[] files1 = file.listFiles();
+                if (files1 != null && files1.length > 0) {
+                    delete(files1);
+                }
+            } else {
+                file.delete();
+            }
+        }
+    }
+
+    private void setShowInExplorerAction(JMenuItem item) {
+        item.addActionListener(e1 -> {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            if (selectedNode != null) {
+                TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
+                String nodePath = node.fi.getPath();
+                if (nodePath != null) {
+                    try {
+                        Runtime.getRuntime().exec("explorer.exe /select," + nodePath);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void setRefreshAction(JMenuItem item) {
+        item.addActionListener(e1 -> {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            if (selectedNode != null) {
+                TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
+                String nodePath = node.fi.getPath();
+
+                File file = new File(nodePath);
+                if (file.exists()) {
+                    selectedNode.removeAllChildren();
+                    ScannerService scannerService = new ScannerService();
+                    FileInfo scan = scannerService.scan(nodePath);
+                    if (bytesToMegabytes(scan.getSize()) > maxMb) {
+                        fillTree(scan, selectedNode);
+                        tree.updateUI();
+                    }
+                } else {
+                    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
+                    parent.remove(selectedNode);
+                    selectedNode.setParent(null);
+                    tree.updateUI();
+                }
+            }
+        });
+    }
+
     private void fillTree(FileInfo rootFI, DefaultMutableTreeNode rootNode) {
-        rootNode.setUserObject(new TreeNodeFI(rootFI));
+        rootNode.setUserObject(new TreeNodeFileInfo(rootFI));
 
         List<FileInfo> children = rootFI.getChildren();
         if (children != null && children.size() > 0) {
             for (FileInfo child : children) {
                 if (bytesToMegabytes(child.getSize()) > maxMb) {
-                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFI(child));
+                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFileInfo(child));
                     rootNode.add(node);
                     fillTree(child, node);
                 }
