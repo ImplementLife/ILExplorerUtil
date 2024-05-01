@@ -1,0 +1,155 @@
+package il.util.explorer.ui;
+
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import il.util.explorer.dto.FI;
+import il.util.explorer.setvices.ScannerService;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static il.util.explorer.setvices.Util.bytesToMegabytes;
+
+public class DetailedUI {
+    private JTree tree;
+    private JPanel root;
+
+    private static class TreeNodeFI {
+        private FI fi;
+
+        public TreeNodeFI(FI fi) {
+            this.fi = fi;
+        }
+
+        @Override
+        public String toString() {
+            return fi.getName() + ": " + bytesToMegabytes(fi.getSize());
+        }
+    }
+
+    public void fill(FI rootFI) {
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("{root}");
+
+        fillTree(rootFI, rootNode);
+        tree.setModel(new DefaultTreeModel(rootNode, false));
+        addContextMenu();
+    }
+
+    private void addContextMenu() {
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = tree.getRowForLocation(e.getX(), e.getY());
+                    if (row != -1) {
+                        tree.setSelectionRow(row);
+                        JPopupMenu menu = new JPopupMenu();
+
+                        JMenuItem showInExplorerItem = new JMenuItem("Show in Explorer");
+                        showInExplorerItem.addActionListener(e1 -> {
+                            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                            if (selectedNode != null) {
+                                TreeNodeFI node = (TreeNodeFI) selectedNode.getUserObject();
+                                String nodePath = node.fi.getPath();
+                                if (nodePath != null) {
+                                    try {
+                                        Runtime.getRuntime().exec("explorer.exe /select," + nodePath);
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                        menu.add(showInExplorerItem);
+
+                        JMenuItem refresh = new JMenuItem("Refresh");
+                        refresh.addActionListener(e1 -> {
+                            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                            if (selectedNode != null) {
+                                TreeNodeFI node = (TreeNodeFI) selectedNode.getUserObject();
+                                String nodePath = node.fi.getPath();
+
+                                File file = new File(nodePath);
+                                selectedNode.removeAllChildren();
+                                if (file.exists()) {
+                                    ScannerService scannerService = new ScannerService();
+                                    FI scan = scannerService.scan(nodePath);
+                                    if (bytesToMegabytes(scan.getSize()) > 10) {
+                                        fillTree(scan, selectedNode);
+                                        tree.repaint();
+                                    }
+                                } else {
+                                    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
+                                    parent.remove(parent.getIndex(selectedNode));
+                                    System.out.println("Path don't valid!");
+                                }
+
+                            }
+                        });
+                        menu.add(refresh);
+
+                        menu.show(tree, e.getX(), e.getY());
+                    }
+                }
+            }
+        });
+    }
+
+    private void fillTree(FI rootFI, DefaultMutableTreeNode rootNode) {
+        rootNode.setUserObject(new TreeNodeFI(rootFI));
+
+        List<FI> children = rootFI.getChildren();
+        if (children != null && children.size() > 0) {
+            for (FI child : children) {
+                if (bytesToMegabytes(child.getSize()) > 10) {
+                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFI(child));
+                    rootNode.add(node);
+                    fillTree(child, node);
+                }
+            }
+        }
+    }
+
+    public JPanel getRoot() {
+        return root;
+    }
+
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        root = new JPanel();
+        root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        root.setForeground(new Color(-12828863));
+        tree = new JTree();
+        tree.setEditable(true);
+        root.add(tree, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return root;
+    }
+
+}
