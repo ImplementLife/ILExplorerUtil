@@ -47,28 +47,35 @@ public class ScannerTabWrap {
 
     @PostConstruct
     private void init() {
+        scannerService.addProgressListener(progressWindow::updateProgress);
+        progressWindow.setOnCancelAction(() -> {
+            scannerService.cancelCurrentScan();
+            progressWindow.setVisible(false);
+        });
+
         btnScan.addActionListener(event -> {
-            CompletableFuture.runAsync(() -> {
-                String path = textStartPath.getText();
-                File file = new File(path);
-                if (file.exists() && file.isDirectory()) {
-                    try {
-                        maxMb = Integer.parseInt(textMaxMb.getText());
-                    } catch (NumberFormatException e) {
-                        uiService.showErrDialog(e);
+            if (!scannerService.isInProcess()) {
+                CompletableFuture.runAsync(() -> {
+                    String path = textStartPath.getText();
+                    File file = new File(path);
+                    if (file.exists() && file.isDirectory()) {
+                        try {
+                            maxMb = Integer.parseInt(textMaxMb.getText());
+                        } catch (NumberFormatException e) {
+                            uiService.showErrDialog(e);
+                        }
+                        progressWindow.setVisible(true);
+                        FileInfo scan = scannerService.scan(path);
+
+                        fill(scan);
+
+                        progressWindow.setVisible(false);
+                    } else {
+                        uiService.showErrDialog(new Throwable("not valid"));
+                        System.out.println("Path don't valid!");
                     }
-                    scannerService.addProgressListener(progressWindow::updateProgress);
-                    progressWindow.setVisible(true);
-                    FileInfo scan = scannerService.scan(path);
-
-                    fill(scan);
-
-                    progressWindow.setVisible(false);
-                } else {
-                    uiService.showErrDialog(new Throwable("not valid"));
-                    System.out.println("Path don't valid!");
-                }
-            });
+                });
+            }
         });
         btnChoose.addActionListener(event -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());

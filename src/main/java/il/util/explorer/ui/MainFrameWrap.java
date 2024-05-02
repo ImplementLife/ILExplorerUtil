@@ -24,7 +24,7 @@ public class MainFrameWrap {
     private JPanel scannerTab;
 
     @PostConstruct
-    public void init() {
+    private void init() {
         scannerTab.add(scannerTabWrap.getRoot());
     }
 

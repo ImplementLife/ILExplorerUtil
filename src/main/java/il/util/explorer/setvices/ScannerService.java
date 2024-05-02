@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,11 @@ public class ScannerService {
         String[] split = path.split("\\\\");
         File root = new File(split[0]);
         totalSize = root.getTotalSpace() - root.getFreeSpace();
-        Thread thread = new Thread(() -> {
-            inProcess = true;
+        totalCalculatedSize = 0;
+
+        System.out.println("Scan for: " + path);
+        inProcess = true;
+        CompletableFuture.runAsync(() -> {
             while (inProcess) {
                 try {
                     Thread.sleep(1000);
@@ -69,10 +73,8 @@ public class ScannerService {
                     printProgressBar(progress);
                 }
             }
+            System.out.println();
         });
-
-        System.out.println("Scan for: " + path);
-        thread.start();
         FileInfo treeFI = getTreeFI(file);
         treeFI.setName(file.getName());
         inProcess = false;
@@ -81,10 +83,17 @@ public class ScannerService {
     }
 
     public void cancelCurrentScan() {
+        inProcess = false;
+    }
 
+    public boolean isInProcess() {
+        return inProcess;
     }
 
     private FileInfo getTreeFI(File file) {
+        if (!inProcess) {
+            return null;
+        }
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null) return null;
@@ -99,7 +108,9 @@ public class ScannerService {
                 size += childSize;
                 fi.addChild(child);
             }
-
+            if (!inProcess) {
+                return null;
+            }
             fi.setSize(size);
             List<FileInfo> children = fi.getChildren();
             if (children != null) {
