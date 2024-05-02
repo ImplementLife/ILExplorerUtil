@@ -1,6 +1,8 @@
 package il.util.explorer.setvices;
 
 import il.util.explorer.dto.FileInfo;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -10,15 +12,14 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerService {
     private long totalSize;
     private long totalCalculatedSize;
-    private long counter;
-
     private boolean inProcess;
     private Consumer<Double> listener;
 
-    public void drawProgressBar(double progress) {
+    public void printProgressBar(double progress) {
         int width = 50; // Width of the progress bar
 
         // Calculate number of characters representing progress
@@ -37,8 +38,9 @@ public class ScannerService {
         progressBar.append(String.format("%.2f", progress * 100)).append("% ");
 
         // Print progress bar
-        System.out.print("\r" + progressBar.toString());
+        System.out.print("\r" + progressBar);
     }
+
     public void addProgressListener(Consumer<Double> listener) {
         this.listener = listener;
     }
@@ -64,7 +66,7 @@ public class ScannerService {
                     if (listener != null) {
                         listener.accept(progress);
                     }
-                    drawProgressBar(progress);
+                    printProgressBar(progress);
                 }
             }
         });
@@ -78,12 +80,8 @@ public class ScannerService {
         return treeFI;
     }
 
-    public long getTotalSize() {
-        return totalSize;
-    }
+    public void cancelCurrentScan() {
 
-    public long getTotalCalculatedSize() {
-        return totalCalculatedSize;
     }
 
     private FileInfo getTreeFI(File file) {
@@ -93,31 +91,23 @@ public class ScannerService {
 
             long size = 0;
             FileInfo fi = new FileInfo(file.getAbsolutePath(), file.getName());
-
             for (File childFile : files) {
                 FileInfo child = getTreeFI(childFile);
                 if (child == null) continue;
 
                 long childSize = child.getSize();
-//                long childMegabytes = bytesToMegabytes(childSize);
                 size += childSize;
-//                if (childMegabytes > 100) {
-                    fi.addChild(child);
-//                }
+                fi.addChild(child);
             }
 
-//            long megabytes = bytesToMegabytes(size);
-//            if (megabytes > 100) {
-                fi.setSize(size);
-                List<FileInfo> children = fi.getChildren();
-                if (children != null) {
-                    List<FileInfo> sortedChildren = children.stream()
-                        .sorted(Comparator.comparing(FileInfo::getSize).reversed())
-                        .collect(Collectors.toList());
-                    fi.setChildren(sortedChildren);
-                }
-//            }
-
+            fi.setSize(size);
+            List<FileInfo> children = fi.getChildren();
+            if (children != null) {
+                List<FileInfo> sortedChildren = children.stream()
+                    .sorted(Comparator.comparing(FileInfo::getSize).reversed())
+                    .collect(Collectors.toList());
+                fi.setChildren(sortedChildren);
+            }
             return fi;
         } else {
             totalCalculatedSize += file.length();

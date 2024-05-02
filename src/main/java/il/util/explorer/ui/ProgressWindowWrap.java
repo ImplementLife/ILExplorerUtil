@@ -3,28 +3,49 @@ package il.util.explorer.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import il.util.explorer.setvices.ResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class ProgressWindow extends JFrame {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class ProgressWindowWrap {
+    @Autowired
+    private ResourceService resourceService;
+
+    private JFrame frame;
     private JButton btnCancel;
     private JProgressBar progressBar;
     private JPanel root;
 
-    public void init() {
-        setTitle("Progress");
-        setSize(300, 80);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        add(root);
-        setUndecorated(true);
+    public void setVisible(boolean visible) {
+        if (frame == null) {
+            frame = new JFrame("Progress");
+            frame.setSize(300, 80);
+            frame.setResizable(false);
+            frame.setLocationRelativeTo(null);
+            frame.add(root);
+            frame.setUndecorated(true);
+            Image image = resourceService.loadImage("IL.png");
+            frame.setIconImage(image);
+        }
+        if (visible) SwingUtilities.updateComponentTreeUI(root);
+        frame.setVisible(visible);
     }
 
     public void updateProgress(double currentSize) {
         progressBar.setValue((int) (currentSize * 100));
         progressBar.updateUI();
+    }
+
+    public void setOnCancelAction(Runnable action) {
+        btnCancel.addActionListener(e -> action.run());
     }
 
     {

@@ -1,5 +1,7 @@
 package il.util.explorer.setvices;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DropDuplicatesService {
 
     public void findDuplicates(List<String> baseFolders) {

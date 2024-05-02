@@ -1,5 +1,7 @@
 package il.util.explorer.setvices;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -14,6 +16,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 @Service
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ResourceService {
     public Image loadImage(String name) {
         Image image = null;

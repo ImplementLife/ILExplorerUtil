@@ -8,6 +8,8 @@ import il.util.explorer.setvices.ResourceService;
 import il.util.explorer.setvices.ScannerService;
 import il.util.explorer.setvices.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,11 +20,14 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class MainFrameWrapper {
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class MainFrameWrap {
     @Autowired
     private UIService uiService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private ProgressWindowWrap progressWindow;
 
     private JPanel root;
     private JTextField textStartPath;
@@ -33,6 +38,7 @@ public class MainFrameWrapper {
 
     @PostConstruct
     public void init() {
+        progressWindow = new ProgressWindowWrap();
         btnScan.addActionListener(event -> {
             CompletableFuture.runAsync(() -> {
                 ScannerTab scannerTab = new ScannerTab();
@@ -46,15 +52,13 @@ public class MainFrameWrapper {
                         uiService.showErrDialog(e);
                     }
                     ScannerService scannerService = new ScannerService();
-                    ProgressWindow dialog = new ProgressWindow();
-                    scannerService.addProgressListener(dialog::updateProgress);
-                    dialog.init();
-                    dialog.setVisible(true);
+                    scannerService.addProgressListener(progressWindow::updateProgress);
+                    progressWindow.setVisible(true);
                     FileInfo scan = scannerService.scan(path);
 
                     scannerTab.fill(scan);
 
-                    dialog.setVisible(false);
+                    progressWindow.setVisible(false);
                     sc.setViewportView(scannerTab.getRoot());
                 } else {
                     uiService.showErrDialog(new Throwable("not valid"));

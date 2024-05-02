@@ -27,7 +27,7 @@ public class ScannerTab {
     }
 
     private static class TreeNodeFileInfo {
-        private FileInfo fi;
+        private final FileInfo fi;
 
         public TreeNodeFileInfo(FileInfo fi) {
             this.fi = fi;
