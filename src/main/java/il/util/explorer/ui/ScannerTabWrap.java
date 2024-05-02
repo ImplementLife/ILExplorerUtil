@@ -2,10 +2,18 @@ package il.util.explorer.ui;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import il.util.explorer.dto.FileInfo;
 import il.util.explorer.setvices.ScannerService;
+import il.util.explorer.setvices.UIService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
@@ -14,16 +22,66 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static il.util.explorer.setvices.Util.bytesToMegabytes;
 
-public class ScannerTab {
+@Component
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class ScannerTabWrap {
+    @Autowired
+    private ProgressWindowWrap progressWindow;
+    @Autowired
+    private UIService uiService;
+    @Autowired
+    private ScannerService scannerService;
+
     private JTree tree;
     private JPanel root;
+    private JScrollPane sc;
+    private JButton btnScan;
+    private JTextField textStartPath;
+    private JTextField textMaxMb;
+    private JButton btnChoose;
     private int maxMb = 100;
 
-    public void setMaxMb(int maxMb) {
-        this.maxMb = maxMb;
+    @PostConstruct
+    private void init() {
+        btnScan.addActionListener(event -> {
+            CompletableFuture.runAsync(() -> {
+                String path = textStartPath.getText();
+                File file = new File(path);
+                if (file.exists() && file.isDirectory()) {
+                    try {
+                        maxMb = Integer.parseInt(textMaxMb.getText());
+                    } catch (NumberFormatException e) {
+                        uiService.showErrDialog(e);
+                    }
+                    scannerService.addProgressListener(progressWindow::updateProgress);
+                    progressWindow.setVisible(true);
+                    FileInfo scan = scannerService.scan(path);
+
+                    fill(scan);
+
+                    progressWindow.setVisible(false);
+                } else {
+                    uiService.showErrDialog(new Throwable("not valid"));
+                    System.out.println("Path don't valid!");
+                }
+            });
+        });
+        btnChoose.addActionListener(event -> {
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            jfc.setDialogTitle("Choose a folder");
+            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            int returnValue = jfc.showDialog(null, "Select");
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jfc.getSelectedFile();
+                textStartPath.setText(selectedFile.getAbsolutePath());
+            }
+        });
+        tree.setVisible(false);
     }
 
     private static class TreeNodeFileInfo {
@@ -43,8 +101,10 @@ public class ScannerTab {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("{root}");
 
         fillTree(rootFI, rootNode);
+        tree.setVisible(true);
         tree.setModel(new DefaultTreeModel(rootNode, false));
         addContextMenu();
+        tree.updateUI();
     }
 
     private void addContextMenu() {
@@ -200,11 +260,38 @@ public class ScannerTab {
      */
     private void $$$setupUI$$$() {
         root = new JPanel();
-        root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        root.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         root.setForeground(new Color(-12828863));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(1, 8, new Insets(0, 0, 0, 0), -1, -1));
+        root.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
+        btnScan = new JButton();
+        btnScan.setText("Scan");
+        panel1.add(btnScan, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        textStartPath = new JTextField();
+        textStartPath.setText("C:\\");
+        panel1.add(textStartPath, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        textMaxMb = new JTextField();
+        textMaxMb.setText("100");
+        panel1.add(textMaxMb, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panel1.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(10, -1), new Dimension(10, -1), new Dimension(10, -1), 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel1.add(spacer2, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        panel1.add(spacer3, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer4 = new Spacer();
+        panel1.add(spacer4, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(10, -1), new Dimension(10, -1), new Dimension(10, -1), 0, false));
+        btnChoose = new JButton();
+        btnChoose.setText("Choose");
+        panel1.add(btnChoose, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        sc = new JScrollPane();
+        sc.setForeground(new Color(-12828863));
+        root.add(sc, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         tree = new JTree();
         tree.setEditable(true);
-        root.add(tree, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        tree.setRootVisible(true);
+        sc.setViewportView(tree);
     }
 
     /**
