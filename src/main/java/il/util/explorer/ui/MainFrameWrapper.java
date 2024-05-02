@@ -4,26 +4,25 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import il.util.explorer.dto.FileInfo;
+import il.util.explorer.setvices.ResourceService;
 import il.util.explorer.setvices.ScannerService;
 import il.util.explorer.setvices.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class FormUI {
+public class MainFrameWrapper {
     @Autowired
     private UIService uiService;
+    @Autowired
+    private ResourceService resourceService;
 
     private JPanel root;
     private JTextField textStartPath;
@@ -76,21 +75,15 @@ public class FormUI {
         });
     }
 
-    public void show() {
+    public void showFrame() {
         JFrame frame = new JFrame("IL Explorer Util");
         frame.add(root);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);
-        // Load icon from Maven resources
-        try {
-            File file = ResourceUtils.getFile("classpath:IL.png");
-            InputStream in = new FileInputStream(file);
-            Image iconImage = ImageIO.read(in);
-            frame.setIconImage(iconImage);
-        } catch (Exception e) {
-            uiService.showErrDialog(e);
-        }
+        Image image = resourceService.loadImage("IL.png");
+        frame.setIconImage(image);
+
         SwingUtilities.updateComponentTreeUI(root);
         frame.setVisible(true);
     }

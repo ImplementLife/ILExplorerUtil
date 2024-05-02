@@ -10,8 +10,8 @@
     <version>1.0</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <build.output.dir>${project.basedir}/target/1FOut</build.output.dir>
         <maven-resources-plugin-version>3.3.0</maven-resources-plugin-version>
@@ -20,8 +20,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.4</version>
-        <relativePath/>
+        <version>2.2.2.RELEASE</version>
+<!--        <relativePath/>-->
     </parent>
 
     <dependencies>
@@ -38,17 +38,14 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>6.0.11</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>6.0.11</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>6.0.11</version>
         </dependency>
 
 
@@ -75,7 +72,7 @@
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
-            <version>${maven-resources-plugin-version}</version>
+            <version>3.3.0</version>
             <type>maven-plugin</type>
         </dependency>
 
@@ -97,7 +94,7 @@
                         <phase>package</phase>
                         <goals><goal>single</goal></goals>
                         <configuration>
-                            <finalName>/1FOut/Client</finalName>
+                            <finalName>/1FOut/ILExplorerUtil</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <archive>
                                 <manifest>

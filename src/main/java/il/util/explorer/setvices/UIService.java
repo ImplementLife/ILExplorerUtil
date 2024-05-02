@@ -2,7 +2,7 @@ package il.util.explorer.setvices;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import il.util.explorer.ui.ErrorDialog;
-import il.util.explorer.ui.FormUI;
+import il.util.explorer.ui.MainFrameWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import javax.swing.*;
 @Service
 public class UIService {
     @Autowired
-    private FormUI form;
+    private MainFrameWrapper mainFrameWrapper;
 
     public void begin() {
         try {
@@ -19,7 +19,7 @@ public class UIService {
         } catch (Throwable e) {
             showErrDialog(new RuntimeException("Failed to initialize LaF", e));
         }
-        form.show();
+        mainFrameWrapper.showFrame();
     }
 
     public void showErrDialog(Throwable throwable) {

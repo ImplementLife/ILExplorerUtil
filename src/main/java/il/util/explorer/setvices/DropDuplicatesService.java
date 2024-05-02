@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class DropDuplicatesService {
 
     public void findDuplicates(List<String> baseFolders) {
-        List<File> baseFoldersAsFiles = baseFolders.stream().map(File::new).toList();
+        List<File> baseFoldersAsFiles = baseFolders.stream().map(File::new).collect(Collectors.toList());
 
     }
 
