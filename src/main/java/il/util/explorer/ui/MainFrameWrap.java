@@ -19,13 +19,17 @@ public class MainFrameWrap {
     private ResourceService resourceService;
     @Autowired
     private ScannerTabWrap scannerTabWrap;
+    @Autowired
+    private FileRenameTabWrap fileRenameTabWrap;
 
     private JPanel root;
     private JPanel scannerTab;
+    private JPanel fileRenameTab;
 
     @PostConstruct
     private void init() {
         scannerTab.add(scannerTabWrap.getRoot());
+        fileRenameTab.add(fileRenameTabWrap.getRoot());
     }
 
     public void showFrame() {
@@ -64,8 +68,11 @@ public class MainFrameWrap {
         scannerTab.setLayout(new BorderLayout(0, 0));
         tabbedPane1.addTab("Size Scanner", scannerTab);
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new BorderLayout(0, 0));
         tabbedPane1.addTab("Dublicats Remover", panel1);
+        fileRenameTab = new JPanel();
+        fileRenameTab.setLayout(new BorderLayout(0, 0));
+        tabbedPane1.addTab("File Renamer", fileRenameTab);
     }
 
     /**
