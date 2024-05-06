@@ -54,6 +54,7 @@ public class ScannerTabWrap {
         });
         tree.setFocusable(false);
         tree.setVisible(false);
+        sc.getVerticalScrollBar().setUnitIncrement(16);
 
         btnScan.addActionListener(event -> {
             if (!scannerService.isInProcess()) {
