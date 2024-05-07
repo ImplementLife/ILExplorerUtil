@@ -1,5 +1,8 @@
 package il.util.explorer.setvices;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.file.FileSystemDirectory;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -7,14 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class FileRenameService {
+    private final SimpleDateFormat format = new SimpleDateFormat();
 
     private List<File> lazyLoadListFiles(File path, Collection<String> extensions) {
         ArrayList<File> files = new ArrayList<>();
@@ -70,10 +72,24 @@ public class FileRenameService {
             c++;
             String name = fileToRename.getName();
             String ext = name.substring(name.indexOf('.'));
-
-            result.add(name + " -> " + String.format("%0" + countZeros + "d", c) + ext);
+            Optional<Date> gm = gm(fileToRename.getAbsolutePath());
+            if (gm.isPresent()) {
+                result.add(name + " -> " + format.format(gm.get()) + ext);
+            } else {
+                result.add(name + " -> " + String.format("%0" + countZeros + "d", c) + ext);
+            }
         }
-
         return result;
     }
+    private Optional<Date> gm(String imagePath) {
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));
+            Date date = metadata.getFirstDirectoryOfType(FileSystemDirectory.class).getDate(3);
+            return Optional.ofNullable(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
 }
