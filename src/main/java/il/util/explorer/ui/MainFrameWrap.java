@@ -25,11 +25,14 @@ public class MainFrameWrap {
     private JPanel root;
     private JPanel scannerTab;
     private JPanel fileRenameTab;
+    private JTabbedPane tabWrap;
 
     @PostConstruct
     private void init() {
         scannerTab.add(scannerTabWrap.getRoot());
         fileRenameTab.add(fileRenameTabWrap.getRoot());
+        tabWrap.setTabPlacement(JTabbedPane.LEFT);
+        tabWrap.putClientProperty("JTabbedPane.tabAlignment", 10); //leading tab alignment
     }
 
     public void showFrame() {
@@ -62,17 +65,17 @@ public class MainFrameWrap {
     private void $$$setupUI$$$() {
         root = new JPanel();
         root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        final JTabbedPane tabbedPane1 = new JTabbedPane();
-        root.add(tabbedPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        tabWrap = new JTabbedPane();
+        root.add(tabWrap, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         scannerTab = new JPanel();
         scannerTab.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Size Scanner", scannerTab);
+        tabWrap.addTab("Size Scanner", scannerTab);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("Dublicats Remover", panel1);
+        tabWrap.addTab("Dublicats Remover", panel1);
         fileRenameTab = new JPanel();
         fileRenameTab.setLayout(new BorderLayout(0, 0));
-        tabbedPane1.addTab("File Renamer", fileRenameTab);
+        tabWrap.addTab("File Renamer", fileRenameTab);
     }
 
     /**
