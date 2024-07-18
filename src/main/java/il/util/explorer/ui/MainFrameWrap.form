@@ -14,7 +14,11 @@
             <preferred-size width="200" height="200"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <alignmentX value="0.5"/>
+          <alignmentY value="0.5"/>
+          <tabPlacement value="2"/>
+        </properties>
         <border type="none"/>
         <children>
           <grid id="7f61d" binding="scannerTab" layout-manager="BorderLayout" hgap="0" vgap="0">
