@@ -5,16 +5,78 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DropDuplicatesService {
+    private static final Set<String> MEDIA_EXTENSIONS = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif", "mp4", "mp3", "wav"));
+
+    public List<List<String>> deepSearchDuplicates(String pathRootFolder) {
+        Map<String, List<String>> hashMap = new HashMap<>();
+        findDuplicates(new File(pathRootFolder), hashMap);
+
+        List<List<String>> duplicates = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : hashMap.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                duplicates.add(entry.getValue());
+            }
+        }
+        return duplicates;
+    }
+
+    private void findDuplicates(File folder, Map<String, List<String>> hashMap) {
+        if (folder.isDirectory()) {
+            for (File file : Objects.requireNonNull(folder.listFiles())) {
+                if (file.isDirectory()) {
+                    findDuplicates(file, hashMap);
+                } else if (isMediaFile(file)) {
+                    try {
+                        String fileHash = getFileHash(file);
+                        hashMap.computeIfAbsent(fileHash, k -> new ArrayList<>()).add(file.getAbsolutePath());
+                    } catch (IOException | NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isMediaFile(File file) {
+        String extension = getFileExtension(file.getName());
+        return MEDIA_EXTENSIONS.contains(extension.toLowerCase());
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastIndexOfDot = fileName.lastIndexOf('.');
+        if (lastIndexOfDot == -1) {
+            return "";
+        }
+        return fileName.substring(lastIndexOfDot + 1);
+    }
+
+    private String getFileHash(File file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+        byte[] hashBytes = digest.digest(fileBytes);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
 
     public void findDuplicates(List<String> baseFolders) {
-        List<File> baseFoldersAsFiles = baseFolders.stream().map(File::new).collect(Collectors.toList());
+        List<File> baseFoldersAsFiles =
+            baseFolders.stream().map(File::new)
+            .collect(Collectors.toList());
 
     }
 

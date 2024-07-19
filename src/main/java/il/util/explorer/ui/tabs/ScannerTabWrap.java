@@ -1,4 +1,4 @@
-package il.util.explorer.ui;
+package il.util.explorer.ui.tabs;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import il.util.explorer.dto.FileInfo;
 import il.util.explorer.setvices.ScannerService;
 import il.util.explorer.setvices.UIService;
+import il.util.explorer.ui.ProgressWindowWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

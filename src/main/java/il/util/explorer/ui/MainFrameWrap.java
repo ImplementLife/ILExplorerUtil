@@ -3,6 +3,9 @@ package il.util.explorer.ui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import il.util.explorer.setvices.ResourceService;
+import il.util.explorer.ui.tabs.FileRenameTabWrap;
+import il.util.explorer.ui.tabs.ScannerTabWrap;
+import il.util.explorer.ui.tabs.drt.DuplicatesRemoverTabWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -21,9 +24,12 @@ public class MainFrameWrap {
     private ScannerTabWrap scannerTabWrap;
     @Autowired
     private FileRenameTabWrap fileRenameTabWrap;
+    @Autowired
+    private DuplicatesRemoverTabWrap duplicatesRemoverTabWrap;
 
     private JPanel root;
     private JPanel scannerTab;
+    private JPanel duplicatesRemoverTab;
     private JPanel fileRenameTab;
     private JTabbedPane tabWrap;
 
@@ -31,6 +37,7 @@ public class MainFrameWrap {
     private void init() {
         scannerTab.add(scannerTabWrap.getRoot());
         fileRenameTab.add(fileRenameTabWrap.getRoot());
+        duplicatesRemoverTab.add(duplicatesRemoverTabWrap.getRoot());
         tabWrap.putClientProperty("JTabbedPane.tabAlignment", 10); //leading tab alignment
     }
 
@@ -72,9 +79,9 @@ public class MainFrameWrap {
         scannerTab = new JPanel();
         scannerTab.setLayout(new BorderLayout(0, 0));
         tabWrap.addTab("Size Scanner", scannerTab);
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new BorderLayout(0, 0));
-        tabWrap.addTab("Dublicats Remover", panel1);
+        duplicatesRemoverTab = new JPanel();
+        duplicatesRemoverTab.setLayout(new BorderLayout(0, 0));
+        tabWrap.addTab("Dublicats Remover", duplicatesRemoverTab);
         fileRenameTab = new JPanel();
         fileRenameTab.setLayout(new BorderLayout(0, 0));
         tabWrap.addTab("File Renamer", fileRenameTab);
