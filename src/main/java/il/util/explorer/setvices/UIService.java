@@ -1,8 +1,8 @@
 package il.util.explorer.setvices;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
-import il.util.explorer.ui.ErrorDialog;
 import il.util.explorer.ui.MainFrameWrap;
+import il.util.explorer.ui.components.ErrorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

@@ -1,4 +1,4 @@
-package il.util.explorer.ui;
+package il.util.explorer.ui.components;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;

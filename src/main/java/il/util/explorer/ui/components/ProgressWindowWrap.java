@@ -1,4 +1,4 @@
-package il.util.explorer.ui;
+package il.util.explorer.ui.components;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -37,6 +37,10 @@ public class ProgressWindowWrap {
         }
         if (visible) SwingUtilities.updateComponentTreeUI(root);
         frame.setVisible(visible);
+    }
+
+    public void setIndeterminate() {
+        progressBar.setIndeterminate(true);
     }
 
     public void updateProgress(double currentSize) {

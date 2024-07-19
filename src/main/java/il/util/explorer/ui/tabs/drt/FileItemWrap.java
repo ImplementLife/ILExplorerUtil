@@ -35,7 +35,7 @@ public class FileItemWrap {
      */
     private void $$$setupUI$$$() {
         root = new JPanel();
-        root.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        root.setLayout(new GridLayoutManager(1, 2, new Insets(4, 0, 4, 0), -1, -1));
         labelName = new JLabel();
         labelName.setText("Label");
         root.add(labelName, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -49,4 +49,5 @@ public class FileItemWrap {
     public JComponent $$$getRootComponent$$$() {
         return root;
     }
+
 }

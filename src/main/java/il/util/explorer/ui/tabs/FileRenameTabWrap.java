@@ -67,6 +67,11 @@ public class FileRenameTabWrap {
         });
 
         sc.getVerticalScrollBar().setUnitIncrement(16);
+        for (CBTemplates value : CBTemplates.values()) {
+            templateComboBox.addItem(value);
+        }
+
+
         btnSelect.addActionListener(event -> {
             JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             jfc.setDialogTitle("Choose a folder");
@@ -82,10 +87,6 @@ public class FileRenameTabWrap {
         btnDoRename.addActionListener(event -> {
 
         });
-
-        for (CBTemplates value : CBTemplates.values()) {
-            templateComboBox.addItem(value);
-        }
     }
 
     private void showPreview() {
