@@ -20,14 +20,13 @@ import static il.util.explorer.setvices.Util.threadSleep;
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerService {
-    private long totalSize;
-    private AtomicLong totalCalculatedSize = new AtomicLong(0);
     private boolean inProcess;
     private Consumer<Double> listener;
 
     private final ForkJoinPool forkJoinPool = new ForkJoinPool(3);
     private final AtomicLong progressCounter = new AtomicLong(0);
-    private final int filesPerThreadMaxCount = 20;
+    private AtomicLong totalCalculatedSize = new AtomicLong(0);
+    private final int filesPerThreadMaxCount = 15;
 
     public void printProgressBar(double progress) {
         int width = 50; // Width of the progress bar
@@ -66,10 +65,10 @@ public class ScannerService {
         }
         String[] split = path.split("\\\\");
         File root = new File(split[0]);
-        totalSize = root.getTotalSpace() - root.getFreeSpace();
+        long totalSize = root.getTotalSpace() - root.getFreeSpace();
         totalCalculatedSize = new AtomicLong(0);
 
-        long time = System.nanoTime();
+        final long timeStart = System.nanoTime();
         System.out.println("Scan for: " + path);
         inProcess = true;
         CompletableFuture.runAsync(() -> {
@@ -81,6 +80,7 @@ public class ScannerService {
                         listener.accept(progress);
                     }
                     printProgressBar(progress);
+                    System.out.printf("Time %.2f s\n", (System.nanoTime() - timeStart) / 1_000_000_000.0);
                 }
             }
             System.out.println();
@@ -92,8 +92,7 @@ public class ScannerService {
         forkJoinPool.shutdownNow();
         treeFI.setName(file.getName());
         inProcess = false;
-        time = System.nanoTime() - time;
-        System.out.printf("Done for %.2f seconds\n", time / 1_000_000_000.0);
+        System.out.printf("Done for %.2f seconds\n", (System.nanoTime() - timeStart) / 1_000_000_000.0);
         return treeFI;
     }
 
@@ -133,6 +132,7 @@ public class ScannerService {
 
                 List<FileInfo> children;
                 if (files.length > filesPerThreadMaxCount) {
+                    //TODO: Make normalize threads load
                     int threadsCount = (files.length / filesPerThreadMaxCount) + 1;
                     List<FilesInfoTask> tasks = new ArrayList<>(threadsCount + 10);
                     for (int i = 0; i < threadsCount; i++) {
