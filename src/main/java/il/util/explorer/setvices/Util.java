@@ -14,4 +14,11 @@ public abstract class Util {
         long megabytes = (kilobytes / 1024);
         return megabytes;
     }
+    public static void threadSleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

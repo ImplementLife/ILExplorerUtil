@@ -6,19 +6,28 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static il.util.explorer.setvices.Util.threadSleep;
 
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerService {
     private long totalSize;
-    private long totalCalculatedSize;
+    private AtomicLong totalCalculatedSize = new AtomicLong(0);
     private boolean inProcess;
     private Consumer<Double> listener;
+
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool(3);
+    private final AtomicLong progressCounter = new AtomicLong(0);
+    private final int filesPerThreadMaxCount = 20;
 
     public void printProgressBar(double progress) {
         int width = 50; // Width of the progress bar
@@ -27,7 +36,8 @@ public class ScannerService {
         int progressChars = (int) (progress * width);
 
         // Draw progress bar
-        StringBuilder progressBar = new StringBuilder("[");
+        StringBuilder progressBar = new StringBuilder();
+        progressBar.append("[");
         for (int i = 0; i < width; i++) {
             if (i < progressChars) {
                 progressBar.append("=");
@@ -36,10 +46,13 @@ public class ScannerService {
             }
         }
         progressBar.append("] ");
-        progressBar.append(String.format("%.2f", progress * 100)).append("% ");
+        progressBar.append(String.format("%.2f", progress * 100)).append("% ").append("\n");
+        progressBar.append(forkJoinPool).append("\n");
+        progressBar.append(String.format("Progress: %d files processed", progressCounter.get())).append("\n");
 
         // Print progress bar
-        System.out.print("\r" + progressBar);
+//        System.out.print('\r');
+        System.out.print(progressBar);
     }
 
     public void addProgressListener(Consumer<Double> listener) {
@@ -54,18 +67,15 @@ public class ScannerService {
         String[] split = path.split("\\\\");
         File root = new File(split[0]);
         totalSize = root.getTotalSpace() - root.getFreeSpace();
-        totalCalculatedSize = 0;
+        totalCalculatedSize = new AtomicLong(0);
 
+        long time = System.nanoTime();
         System.out.println("Scan for: " + path);
         inProcess = true;
         CompletableFuture.runAsync(() -> {
             while (inProcess) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                double progress = (double) totalCalculatedSize / totalSize;
+                threadSleep(1000);
+                double progress = (double) totalCalculatedSize.get() / totalSize;
                 if (inProcess) {
                     if (listener != null) {
                         listener.accept(progress);
@@ -76,9 +86,14 @@ public class ScannerService {
             System.out.println();
         });
         FileInfo treeFI = getTreeFI(file);
+        threadSleep(100);
+        forkJoinPool.shutdown();
+        threadSleep(100);
+        forkJoinPool.shutdownNow();
         treeFI.setName(file.getName());
         inProcess = false;
-        System.out.println("Done");
+        time = System.nanoTime() - time;
+        System.out.printf("Done for %.2f seconds\n", time / 1_000_000_000.0);
         return treeFI;
     }
 
@@ -90,39 +105,84 @@ public class ScannerService {
         return inProcess;
     }
 
-    private FileInfo getTreeFI(File file) {
-        if (!inProcess) {
-            return null;
+    private class FilesInfoTask extends RecursiveTask<List<FileInfo>> {
+        private final List<File> files;
+
+        public FilesInfoTask(List<File> files) {
+            this.files = files;
         }
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files == null) return null;
 
-            long size = 0;
-            FileInfo fi = new FileInfo(file.getAbsolutePath(), file.getName());
-            for (File childFile : files) {
-                FileInfo child = getTreeFI(childFile);
-                if (child == null) continue;
+        @Override
+        protected List<FileInfo> compute() {
+            return files.stream()
+                .map(this::calculateAndGet)
+                .collect(Collectors.toList());
+        }
 
-                long childSize = child.getSize();
-                size += childSize;
-                fi.addChild(child);
-            }
+        protected FileInfo calculateAndGet(File file) {
             if (!inProcess) {
                 return null;
             }
-            fi.setSize(size);
-            List<FileInfo> children = fi.getChildren();
-            if (children != null) {
+
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                if (files == null) return null;
+
+                long size = 0;
+                FileInfo fileInfo = new FileInfo(file.getAbsolutePath(), file.getName());
+
+                List<FileInfo> children;
+                if (files.length > filesPerThreadMaxCount) {
+                    int threadsCount = (files.length / filesPerThreadMaxCount) + 1;
+                    List<FilesInfoTask> tasks = new ArrayList<>(threadsCount + 10);
+                    for (int i = 0; i < threadsCount; i++) {
+                        List<File> list = new ArrayList<>();
+                        for (int j = filesPerThreadMaxCount * i; j < filesPerThreadMaxCount * (i+1) && j < files.length; j++) {
+                            list.add(files[j]);
+                        }
+                        FilesInfoTask task = new FilesInfoTask(list);
+                        tasks.add(task);
+                    }
+
+                    tasks.forEach(ForkJoinTask::fork);
+                    children = tasks.stream()
+                        .map(ForkJoinTask::join)
+                        .flatMap(List::stream)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                } else {
+                    children = Arrays.stream(files)
+                        .map(this::calculateAndGet)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                }
+
+                for (FileInfo child : children) {
+                    size += child.getSize();
+                    fileInfo.addChild(child);
+                }
+
+                if (!inProcess) {
+                    return null;
+                }
+
                 List<FileInfo> sortedChildren = children.stream()
                     .sorted(Comparator.comparing(FileInfo::getSize).reversed())
                     .collect(Collectors.toList());
-                fi.setChildren(sortedChildren);
+                fileInfo.setSize(size);
+                fileInfo.setChildren(sortedChildren);
+                return fileInfo;
+            } else {
+                totalCalculatedSize.addAndGet(file.length());
+                progressCounter.incrementAndGet();
+                return new FileInfo(file.getAbsolutePath(), file.getName(), file.length());
             }
-            return fi;
-        } else {
-            totalCalculatedSize += file.length();
-            return new FileInfo(file.getAbsolutePath(), file.getName(), file.length());
         }
+    }
+
+    private FileInfo getTreeFI(File file) {
+        ArrayList<File> files = new ArrayList<>();
+        files.add(file);
+        return forkJoinPool.invoke(new FilesInfoTask(files)).get(0);
     }
 }
