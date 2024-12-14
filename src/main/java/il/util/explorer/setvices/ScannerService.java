@@ -1,6 +1,7 @@
 package il.util.explorer.setvices;
 
 import il.util.explorer.dto.FileInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static il.util.explorer.setvices.Util.threadSleep;
 
+@Slf4j
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerService {
@@ -69,21 +71,20 @@ public class ScannerService {
         totalCalculatedSize = new AtomicLong(0);
 
         final long timeStart = System.nanoTime();
-        System.out.println("Scan for: " + path);
+        log.info("Scan for: {}", path);
         inProcess = true;
         CompletableFuture.runAsync(() -> {
             while (inProcess) {
-                threadSleep(1000);
+                threadSleep(3000);
                 double progress = (double) totalCalculatedSize.get() / totalSize;
                 if (inProcess) {
                     if (listener != null) {
                         listener.accept(progress);
                     }
                     printProgressBar(progress);
-                    System.out.printf("Time %.2f s\n", (System.nanoTime() - timeStart) / 1_000_000_000.0);
+                    log.info(String.format("Time %.2f s\n", (System.nanoTime() - timeStart) / 1_000_000_000.0));
                 }
             }
-            System.out.println();
         });
         FileInfo treeFI = getTreeFI(file);
         threadSleep(100);
@@ -92,7 +93,7 @@ public class ScannerService {
         forkJoinPool.shutdownNow();
         treeFI.setName(file.getName());
         inProcess = false;
-        System.out.printf("Done for %.2f seconds\n", (System.nanoTime() - timeStart) / 1_000_000_000.0);
+        log.info(String.format("Time %.2f s\n", (System.nanoTime() - timeStart) / 1_000_000_000.0));
         return treeFI;
     }
 

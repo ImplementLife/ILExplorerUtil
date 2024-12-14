@@ -1,5 +1,6 @@
 package il.util.explorer.setvices;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DropDuplicatesService {
@@ -97,6 +99,6 @@ public class DropDuplicatesService {
                 file.renameTo(new File("C:\\Users\\ImplementLife\\Desktop\\\u0421 \u041D\u043E\u0443\u0442\u0430\\from telephone\\temp\\" + name));
             }
         }
-        System.out.println("countDuplicates = " + countDuplicates);
+        log.info("countDuplicates = {}", countDuplicates);
     }
 }
