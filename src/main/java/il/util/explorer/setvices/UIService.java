@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class UIService {
@@ -26,6 +28,8 @@ public class UIService {
     }
 
     public void showErrDialog(Throwable throwable) {
-        new ErrorDialog(throwable);
+        runAsync(() -> {
+            new ErrorDialog(throwable);
+        });
     }
 }

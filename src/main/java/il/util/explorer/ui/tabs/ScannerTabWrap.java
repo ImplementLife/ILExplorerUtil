@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static il.util.explorer.setvices.Util.bytesToMegabytes;
 
+
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerTabWrap {
@@ -75,7 +76,7 @@ public class ScannerTabWrap {
 
                         progressWindow.setVisible(false);
                     } else {
-                        uiService.showErrDialog(new Throwable("not valid"));
+                        uiService.showErrDialog(new IllegalArgumentException(String.format("%s is not valid", path)));
                         System.out.println("Path don't valid!");
                     }
                 });
