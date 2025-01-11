@@ -8,4 +8,5 @@ import java.util.List;
 public class Res {
     private List<String> actual;
     private List<String> expect;
+    private List<RenameInfo> renameInfoList;
 }

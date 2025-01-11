@@ -143,7 +143,7 @@ public class FileRenameTabWrap {
         rules.add(new AddPartRule("ic_"));
         req.setRules(rules);
 
-//        fileRenameService.doRename(req);
+        fileRenameService.doRename(req);
     }
 
     private void showPreview() {

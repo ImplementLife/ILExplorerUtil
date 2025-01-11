@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,13 +67,34 @@ public class FileRenameService {
         }
 
         res.setExpect(result.stream().map(e -> e.getNewName()).collect(Collectors.toList()));
-
+        res.setRenameInfoList(result);
         return res;
     }
 
     public void doRename(Req req) {
+        String pathSource = req.getPathSource();
+        String pathOut = req.getPathOut();
         Res process = process(req);
 
+        List<RenameInfo> renameInfoList = process.getRenameInfoList();
+
+        File outDir = new File(pathOut);
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        for (RenameInfo renameInfo : renameInfoList) {
+            if (!renameInfo.isIgnore()) {
+                File oldFile = new File(pathSource, renameInfo.getOldName());
+                File newFile = new File(pathOut, renameInfo.getNewName());
+
+                try {
+                    Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Res getPreview(Req req) {
