@@ -1,11 +1,15 @@
 package com.il.util.ui.tabs;
 
-import com.il.util.setvices.FileRenameService;
 import com.il.util.setvices.UIService;
 import com.il.util.setvices.Util;
+import com.il.util.setvices.rename.FileRenameService;
+import com.il.util.setvices.rename.NumRule;
+import com.il.util.setvices.rename.Req;
+import com.il.util.setvices.rename.Res;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -16,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Collections;
 
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -35,6 +40,10 @@ public class FileRenameTabWrap {
 
     private JSplitPane spWrapper;
     private JScrollPane sc;
+    private JPanel pActual;
+    private JPanel pExpect;
+    private JTextArea taA;
+    private JTextArea taE;
 
 //    private JTextField textPath;
 //    private JTextField textTemplate;
@@ -42,8 +51,6 @@ public class FileRenameTabWrap {
 //    private JButton btnSelect;
 //    private JButton btnDoRename;
 //    private JComboBox<CBTemplates> templateComboBox;
-//    private JScrollPane spActual;
-//    private JScrollPane spPreview;
 
 
     private enum CBTemplates {
@@ -101,6 +108,7 @@ public class FileRenameTabWrap {
                 String folder = uiService.chooseFolder();
                 tfSourceDir.setText(folder);
                 tfOutDir.setText(folder + Util.getFileSeparator() + "out");
+                showPreview();
             } catch (Exception ignore) {
             }
         });
@@ -113,14 +121,16 @@ public class FileRenameTabWrap {
         });
     }
 
-//    private void showPreview() {
-//        List<String> preview = fileRenameService.getPreview(textPath.getText());
-//        StringBuilder builder = new StringBuilder();
-//        for (String s : preview) {
-//            builder.append(s).append('\n');
-//        }
-//        textTempFilesPreview.setText(builder.toString());
-//    }
+    private void showPreview() {
+        Req req = new Req();
+        req.setPathSource(tfSourceDir.getText());
+        req.setPathOut(tfOutDir.getText());
+        req.setRules(Collections.singletonList(new NumRule()));
+
+        Res preview = fileRenameService.getPreview(req);
+        taA.setText(Strings.join(preview.getActual(), '\n'));
+        taE.setText(Strings.join(preview.getExpect(), '\n'));
+    }
 
     private void rootResized() {
         {
@@ -189,20 +199,68 @@ public class FileRenameTabWrap {
         spWrapper.setDividerLocation(200);
         spWrapper.setDividerSize(4);
         sc.setViewportView(spWrapper);
+        pActual = new JPanel();
+        pActual.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        spWrapper.setLeftComponent(pActual);
+        taA = new JTextArea();
+        taA.setEditable(false);
+        pActual.add(taA, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         final JPanel panel5 = new JPanel();
-        panel5.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        spWrapper.setLeftComponent(panel5);
+        panel5.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        pActual.add(panel5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         final JPanel panel6 = new JPanel();
-        panel6.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        spWrapper.setRightComponent(panel6);
+        panel6.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel5.add(panel6, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Actual");
+        panel6.add(label3, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
-        root.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 4), new Dimension(-1, 4), new Dimension(-1, 4), 0, false));
+        panel6.add(spacer3, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
-        root.add(spacer4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 4), null, 0, false));
+        panel6.add(spacer4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, null, new Dimension(4, 4), null, 0, false));
         final Spacer spacer5 = new Spacer();
-        root.add(spacer5, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, 1, 1, null, new Dimension(4, -1), null, 0, false));
+        panel6.add(spacer5, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(4, 4), null, 0, false));
         final Spacer spacer6 = new Spacer();
-        root.add(spacer6, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, null, new Dimension(4, -1), null, 0, false));
+        panel6.add(spacer6, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(4, 4), null, 0, false));
+        final JPanel panel7 = new JPanel();
+        panel7.setLayout(new BorderLayout(0, 0));
+        panel7.setBackground(new Color(-11053225));
+        panel5.add(panel7, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 2), new Dimension(-1, 2), new Dimension(-1, 2), 0, false));
+        pExpect = new JPanel();
+        pExpect.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        spWrapper.setRightComponent(pExpect);
+        taE = new JTextArea();
+        taE.setEditable(false);
+        pExpect.add(taE, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        final JPanel panel8 = new JPanel();
+        panel8.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        pExpect.add(panel8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JPanel panel9 = new JPanel();
+        panel9.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel8.add(panel9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("Expect");
+        panel9.add(label4, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer7 = new Spacer();
+        panel9.add(spacer7, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final Spacer spacer8 = new Spacer();
+        panel9.add(spacer8, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, null, new Dimension(4, 4), null, 0, false));
+        final Spacer spacer9 = new Spacer();
+        panel9.add(spacer9, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(4, 4), null, 0, false));
+        final Spacer spacer10 = new Spacer();
+        panel9.add(spacer10, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(4, 4), null, 0, false));
+        final JPanel panel10 = new JPanel();
+        panel10.setLayout(new BorderLayout(0, 0));
+        panel10.setBackground(new Color(-11053225));
+        panel8.add(panel10, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 2), new Dimension(-1, 2), new Dimension(-1, 2), 0, false));
+        final Spacer spacer11 = new Spacer();
+        root.add(spacer11, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 4), new Dimension(-1, 4), new Dimension(-1, 4), 0, false));
+        final Spacer spacer12 = new Spacer();
+        root.add(spacer12, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 4), null, 0, false));
+        final Spacer spacer13 = new Spacer();
+        root.add(spacer13, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, 1, 1, null, new Dimension(4, -1), null, 0, false));
+        final Spacer spacer14 = new Spacer();
+        root.add(spacer14, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, 1, null, new Dimension(4, -1), null, 0, false));
     }
 
     /**

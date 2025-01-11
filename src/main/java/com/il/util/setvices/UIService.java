@@ -35,7 +35,7 @@ public class UIService {
             UIManager.put("SplitPane.background", customColor);
             UIManager.put("SplitPane.dividerSize", 1);
 
-            printUIParams();
+//            printUIParams();
 
         } catch (Throwable e) {
             showErrDialog(new RuntimeException("Failed to initialize LaF", e));

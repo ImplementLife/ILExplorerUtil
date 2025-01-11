@@ -1,4 +1,4 @@
-package com.il.util.setvices;
+package com.il.util.setvices.rename;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -58,7 +59,21 @@ public class FileRenameService {
         }
     }
 
-    public List<String> getPreview(String path) {
+    public Res getPreview(Req req) {
+        File file = new File(req.getPathSource());
+        File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
+        if (!file.exists() || file.isFile() || files == null || files.length == 0) {
+            throw new IllegalArgumentException(String.format("Folder with name: [%s] doesn't exists", req.getPathSource()));
+        }
+        List<String> filesNames = Arrays.stream(files)
+            .map(e -> e.getName())
+            .collect(Collectors.toList());
+        Res res = new Res();
+        res.setActual(filesNames);
+        res.setExpect(req.getRules().get(0).getPreview(filesNames));
+        return res;
+    }
+    private List<String> getPreview(String path) {
         File file = new File(path);
         File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
         if (!file.exists() || file.isFile() || files == null || files.length == 0) {
