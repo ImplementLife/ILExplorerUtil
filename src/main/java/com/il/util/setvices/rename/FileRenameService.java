@@ -3,6 +3,7 @@ package com.il.util.setvices.rename;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.file.FileSystemDirectory;
+import com.il.util.setvices.rename.rule.Rule;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -36,30 +37,7 @@ public class FileRenameService {
         return files;
     }
 
-    public Set<String> getAllExtensions() {
-        if (true) throw new UnsupportedOperationException();
-        return null;
-    }
-
-//    public void doRename(String path) {
-//        List<String> extensions = new ArrayList<>();
-//        extensions.add(".png");
-//        extensions.add(".jpg");
-//        extensions.add(".jpeg");
-//
-//        List<File> files = lazyLoadListFiles(
-//            new File(path), extensions
-//        );
-//
-//        for (int i = 0; i < files.size(); i++) {
-//            String currentNameThisFile = files.get(i).getName();
-//            String expansionThisFile = currentNameThisFile.substring(currentNameThisFile.lastIndexOf('.'));
-//            String pathThisFile = path + "\\" + i + expansionThisFile;
-//            files.get(i).renameTo(new File(pathThisFile));
-//        }
-//    }
-
-    private Res process(Req req, boolean isPreview) {
+    private Res process(Req req) {
         File file = new File(req.getPathSource());
         File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
         if (!file.exists() || file.isFile() || files == null || files.length == 0) {
@@ -72,43 +50,33 @@ public class FileRenameService {
         res.setActual(filesNames);
 
         List<Rule> rules = req.getRules();
-        List<String> result = filesNames;
+        List<RenameInfo> result = filesNames.stream()
+            .map(e -> {
+                RenameInfo renameInfo = new RenameInfo();
+                renameInfo.setOldName(e);
+                renameInfo.setNewName(e);
+                return renameInfo;
+            })
+            .collect(Collectors.toList());
+
         for (Rule rule : rules) {
-            if (isPreview) {
-                result = rule.getPreview(result);
-            } else {
-//                result = rule.doRename(result);
-            }
+            result = rule.getRenameInfo(result);
         }
 
-        res.setExpect(rules.get(0).getPreview(result));
+        res.setExpect(result.stream().map(e -> e.getNewName()).collect(Collectors.toList()));
+
         return res;
     }
 
     public void doRename(Req req) {
+        Res process = process(req);
 
     }
+
     public Res getPreview(Req req) {
-        File file = new File(req.getPathSource());
-        File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
-        if (!file.exists() || file.isFile() || files == null || files.length == 0) {
-            throw new IllegalArgumentException(String.format("Folder with name: [%s] doesn't exists", req.getPathSource()));
-        }
-        List<String> filesNames = Arrays.stream(files)
-            .map(e -> e.getName())
-            .collect(Collectors.toList());
-        Res res = new Res();
-        res.setActual(filesNames);
-
-        List<Rule> rules = req.getRules();
-        List<String> result = filesNames;
-        for (Rule rule : rules) {
-            result = rule.getPreview(result);
-        }
-
-        res.setExpect(rules.get(0).getPreview(result));
-        return res;
+        return process(req);
     }
+
     private List<String> getPreview(String path) {
         File file = new File(path);
         File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
@@ -132,6 +100,7 @@ public class FileRenameService {
         }
         return result;
     }
+
     private Optional<Date> gm(String imagePath) {
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(new File(imagePath));

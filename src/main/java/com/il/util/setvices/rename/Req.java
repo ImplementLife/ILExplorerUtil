@@ -1,5 +1,6 @@
 package com.il.util.setvices.rename;
 
+import com.il.util.setvices.rename.rule.Rule;
 import lombok.Data;
 
 import java.util.List;

@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class Res {
-    List<String> actual;
-    List<String> expect;
+    private List<String> actual;
+    private List<String> expect;
 }
