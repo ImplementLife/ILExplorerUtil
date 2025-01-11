@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>il.util</groupId>
+    <groupId>com.il.util</groupId>
     <artifactId>explorer</artifactId>
     <name>ILExplorerUtil</name>
-    <version>1.0</version>
+    <version>0.0.4</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -82,11 +82,25 @@
             <type>maven-plugin</type>
         </dependency>
 
+        <!-- Log4j -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.22.1</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
         <dependency>
             <groupId>com.drewnoakes</groupId>
@@ -111,7 +125,7 @@
                             <appendAssemblyId>false</appendAssemblyId>
                             <archive>
                                 <manifest>
-                                    <mainClass>il.util.explorer.Boot</mainClass>
+                                    <mainClass>com.il.util.Boot</mainClass>
                                 </manifest>
                                 <manifestEntries>
                                     <Multi-Release>true</Multi-Release>
