@@ -2,10 +2,7 @@ package com.il.util.ui.tabs;
 
 import com.il.util.setvices.UIService;
 import com.il.util.setvices.Util;
-import com.il.util.setvices.rename.FileRenameService;
-import com.il.util.setvices.rename.NumRule;
-import com.il.util.setvices.rename.Req;
-import com.il.util.setvices.rename.Res;
+import com.il.util.setvices.rename.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -20,7 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -44,6 +42,7 @@ public class FileRenameTabWrap {
     private JPanel pExpect;
     private JTextArea taA;
     private JTextArea taE;
+    private JButton btnConfirm;
 
 //    private JTextField textPath;
 //    private JTextField textTemplate;
@@ -119,13 +118,40 @@ public class FileRenameTabWrap {
             } catch (Exception ignore) {
             }
         });
+
+        btnConfirm.addActionListener(e -> {
+            doRename();
+        });
+    }
+
+    private void doRename() {
+        Req req = new Req();
+        req.setPathSource(tfSourceDir.getText());
+        req.setPathOut(tfOutDir.getText());
+
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new RemovePartRule("_opsz48"));
+        rules.add(new RemovePartRule("_GRAD0"));
+        rules.add(new RemovePartRule("_wght400"));
+        rules.add(new RemovePartRule("_FILL0"));
+        rules.add(new AddPartRule("ic_"));
+        req.setRules(rules);
+
+        fileRenameService.doRename(req);
     }
 
     private void showPreview() {
         Req req = new Req();
         req.setPathSource(tfSourceDir.getText());
         req.setPathOut(tfOutDir.getText());
-        req.setRules(Collections.singletonList(new NumRule()));
+
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new RemovePartRule("_opsz48"));
+        rules.add(new RemovePartRule("_GRAD0"));
+        rules.add(new RemovePartRule("_wght400"));
+        rules.add(new RemovePartRule("_FILL0"));
+        rules.add(new AddPartRule("ic_"));
+        req.setRules(rules);
 
         Res preview = fileRenameService.getPreview(req);
         taA.setText(Strings.join(preview.getActual(), '\n'));

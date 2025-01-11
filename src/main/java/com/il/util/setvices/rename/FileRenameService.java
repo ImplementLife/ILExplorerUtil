@@ -41,24 +41,53 @@ public class FileRenameService {
         return null;
     }
 
-    public void doRename(String path) {
-        List<String> extensions = new ArrayList<>();
-        extensions.add(".png");
-        extensions.add(".jpg");
-        extensions.add(".jpeg");
+//    public void doRename(String path) {
+//        List<String> extensions = new ArrayList<>();
+//        extensions.add(".png");
+//        extensions.add(".jpg");
+//        extensions.add(".jpeg");
+//
+//        List<File> files = lazyLoadListFiles(
+//            new File(path), extensions
+//        );
+//
+//        for (int i = 0; i < files.size(); i++) {
+//            String currentNameThisFile = files.get(i).getName();
+//            String expansionThisFile = currentNameThisFile.substring(currentNameThisFile.lastIndexOf('.'));
+//            String pathThisFile = path + "\\" + i + expansionThisFile;
+//            files.get(i).renameTo(new File(pathThisFile));
+//        }
+//    }
 
-        List<File> files = lazyLoadListFiles(
-            new File(path), extensions
-        );
-
-        for (int i = 0; i < files.size(); i++) {
-            String currentNameThisFile = files.get(i).getName();
-            String expansionThisFile = currentNameThisFile.substring(currentNameThisFile.lastIndexOf('.'));
-            String pathThisFile = path + "\\" + i + expansionThisFile;
-            files.get(i).renameTo(new File(pathThisFile));
+    private Res process(Req req, boolean isPreview) {
+        File file = new File(req.getPathSource());
+        File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
+        if (!file.exists() || file.isFile() || files == null || files.length == 0) {
+            throw new IllegalArgumentException(String.format("Folder with name: [%s] doesn't exists", req.getPathSource()));
         }
+        List<String> filesNames = Arrays.stream(files)
+            .map(e -> e.getName())
+            .collect(Collectors.toList());
+        Res res = new Res();
+        res.setActual(filesNames);
+
+        List<Rule> rules = req.getRules();
+        List<String> result = filesNames;
+        for (Rule rule : rules) {
+            if (isPreview) {
+                result = rule.getPreview(result);
+            } else {
+//                result = rule.doRename(result);
+            }
+        }
+
+        res.setExpect(rules.get(0).getPreview(result));
+        return res;
     }
 
+    public void doRename(Req req) {
+
+    }
     public Res getPreview(Req req) {
         File file = new File(req.getPathSource());
         File[] files = file.listFiles((FilenameFilter) FileFileFilter.INSTANCE);
@@ -70,7 +99,14 @@ public class FileRenameService {
             .collect(Collectors.toList());
         Res res = new Res();
         res.setActual(filesNames);
-        res.setExpect(req.getRules().get(0).getPreview(filesNames));
+
+        List<Rule> rules = req.getRules();
+        List<String> result = filesNames;
+        for (Rule rule : rules) {
+            result = rule.getPreview(result);
+        }
+
+        res.setExpect(rules.get(0).getPreview(result));
         return res;
     }
     private List<String> getPreview(String path) {
