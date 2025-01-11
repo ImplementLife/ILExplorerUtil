@@ -21,4 +21,17 @@ public abstract class Util {
             e.printStackTrace();
         }
     }
+
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    public static String getFileSeparator() {
+        return FILE_SEPARATOR;
+    }
+
+    public static String replaceSeparators(String path) {
+        if (path == null) {
+            throw new IllegalArgumentException("Path cannot be null");
+        }
+        return path.replace("/", FILE_SEPARATOR).replace("\\", FILE_SEPARATOR);
+    }
 }
