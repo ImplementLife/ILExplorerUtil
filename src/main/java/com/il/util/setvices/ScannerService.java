@@ -45,13 +45,11 @@ public class ScannerService {
             }
         }
         progressBar.append("] ");
-        progressBar.append(String.format("%.2f", progress * 100)).append("% ").append("\n");
-        progressBar.append(forkJoinPool).append("\n");
-        progressBar.append(String.format("Progress: %d files processed", progressCounter.get())).append("\n");
+        progressBar.append(String.format("%.2f", progress * 100)).append("% ");
 
-        // Print progress bar
-//        System.out.print('\r');
-        System.out.print(progressBar);
+        log.info(progressBar.toString());
+        log.info(forkJoinPool.toString());
+        log.info("Progress: {} files processed", progressCounter.get());
     }
 
     public void addProgressListener(Consumer<Double> listener) {
