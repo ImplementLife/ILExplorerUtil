@@ -77,7 +77,7 @@ public class ScannerTabWrap {
                         progressWindow.setVisible(false);
                     } else {
                         uiService.showErrDialog(new IllegalArgumentException(String.format("%s is not valid", path)));
-                        log.info("Path don't valid!");
+                        log.info("Path doesn't valid!");
                     }
                 });
             }
@@ -104,7 +104,7 @@ public class ScannerTabWrap {
 
         @Override
         public String toString() {
-            return fi.getName() + ": " + Util.bytesToMegabytes(fi.getSize());
+            return fi.getName() + ": " + Util.formatNumberWithSpaces(String.valueOf(Util.bytesToMegabytes(fi.getSize())));
         }
     }
 

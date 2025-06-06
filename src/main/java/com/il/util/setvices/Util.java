@@ -34,4 +34,24 @@ public abstract class Util {
         }
         return path.replace("/", FILE_SEPARATOR).replace("\\", FILE_SEPARATOR);
     }
+
+    public static String formatNumberWithSpaces(String str) {
+        String[] split = str.split("\\.");
+        StringBuilder out = new StringBuilder();
+        for (String s : split) {
+            StringBuilder part = new StringBuilder();
+            int count = 0;
+            for (int i = s.length() - 1; i >= 0; i--) {
+                part.append(s.charAt(i));
+                count++;
+                if (count % 3 == 0 && i != 0) {
+                    part.append(' ');
+                }
+            }
+            out.append(part.reverse()).append('.');
+        }
+        return out.substring(0, out.length() - 1);
+    }
+
+
 }
