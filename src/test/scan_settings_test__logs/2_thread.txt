@@ -1,0 +1,392 @@
+C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\bin\java.exe -javaagent:C:\Users\ImplementLife\AppData\Local\JetBrains\Toolbox\apps\IDEA-C\ch-0\213.7172.25\lib\idea_rt.jar=56235:C:\Users\ImplementLife\AppData\Local\JetBrains\Toolbox\apps\IDEA-C\ch-0\213.7172.25\bin -Dfile.encoding=UTF-8 -classpath C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\charsets.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\access-bridge-64.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\cldrdata.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\dnsns.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\jaccess.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\jfxrt.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\localedata.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\nashorn.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\sunec.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\sunjce_provider.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\sunmscapi.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\sunpkcs11.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\ext\zipfs.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\jce.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\jfr.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\jfxswt.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\jsse.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\management-agent.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\resources.jar;C:\Java\OpenJDK\jdk-8.0.362.09-hotspot\jre\lib\rt.jar;C:\Users\ImplementLife\.1IdeaProjects\ILExplorerUtil\target\classes;C:\Users\ImplementLife\.m2\repository\org\springframework\boot\spring-boot-starter\2.2.2.RELEASE\spring-boot-starter-2.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\boot\spring-boot\2.2.2.RELEASE\spring-boot-2.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\2.2.2.RELEASE\spring-boot-autoconfigure-2.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\jakarta\annotation\jakarta.annotation-api\1.3.5\jakarta.annotation-api-1.3.5.jar;C:\Users\ImplementLife\.m2\repository\org\yaml\snakeyaml\1.25\snakeyaml-1.25.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-beans\5.2.2.RELEASE\spring-beans-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-core\5.2.2.RELEASE\spring-core-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-jcl\5.2.2.RELEASE\spring-jcl-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-context\5.2.2.RELEASE\spring-context-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-aop\5.2.2.RELEASE\spring-aop-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\org\springframework\spring-expression\5.2.2.RELEASE\spring-expression-5.2.2.RELEASE.jar;C:\Users\ImplementLife\.m2\repository\com\formdev\flatlaf\3.3\flatlaf-3.3.jar;C:\Users\ImplementLife\.m2\repository\com\intellij\forms_rt\7.0.3\forms_rt-7.0.3.jar;C:\Users\ImplementLife\.m2\repository\asm\asm-commons\3.0\asm-commons-3.0.jar;C:\Users\ImplementLife\.m2\repository\asm\asm-tree\3.0\asm-tree-3.0.jar;C:\Users\ImplementLife\.m2\repository\asm\asm\3.0\asm-3.0.jar;C:\Users\ImplementLife\.m2\repository\com\jgoodies\forms\1.1-preview\forms-1.1-preview.jar;C:\Users\ImplementLife\.m2\repository\jdom\jdom\1.0\jdom-1.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\plugins\maven-assembly-plugin\3.4.2\maven-assembly-plugin-3.4.2.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\shared\maven-common-artifact-filters\3.3.1\maven-common-artifact-filters-3.3.1.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\shared\maven-artifact-transfer\0.13.1\maven-artifact-transfer-0.13.1.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-core\3.0\maven-core-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-model\3.0\maven-model-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-settings\3.0\maven-settings-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-settings-builder\3.0\maven-settings-builder-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-repository-metadata\3.0\maven-repository-metadata-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-plugin-api\3.0\maven-plugin-api-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-model-builder\3.0\maven-model-builder-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-aether-provider\3.0\maven-aether-provider-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\aether\aether-impl\1.7\aether-impl-1.7.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\aether\aether-spi\1.7\aether-spi-1.7.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\aether\aether-api\1.7\aether-api-1.7.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\aether\aether-util\1.7\aether-util-1.7.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\sisu\sisu-inject-plexus\1.4.2\sisu-inject-plexus-1.4.2.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\sisu\sisu-inject-bean\1.4.2\sisu-inject-bean-1.4.2.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\sisu\sisu-guice\2.1.7\sisu-guice-2.1.7-noaop.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-classworlds\2.2.3\plexus-classworlds-2.2.3.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\plexus\plexus-sec-dispatcher\1.3\plexus-sec-dispatcher-1.3.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\plexus\plexus-cipher\1.4\plexus-cipher-1.4.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-artifact\3.0\maven-artifact-3.0.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-component-annotations\2.0.0\plexus-component-annotations-2.0.0.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-interpolation\1.26\plexus-interpolation-1.26.jar;C:\Users\ImplementLife\.m2\repository\commons-io\commons-io\2.11.0\commons-io-2.11.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\shared\maven-filtering\3.3.0\maven-filtering-3.3.0.jar;C:\Users\ImplementLife\.m2\repository\javax\inject\javax.inject\1\javax.inject-1.jar;C:\Users\ImplementLife\.m2\repository\org\sonatype\plexus\plexus-build-api\0.0.7\plexus-build-api-0.0.7.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-io\3.4.0\plexus-io-3.4.0.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-archiver\4.4.0\plexus-archiver-4.4.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\commons\commons-compress\1.21\commons-compress-1.21.jar;C:\Users\ImplementLife\.m2\repository\org\iq80\snappy\snappy\0.4\snappy-0.4.jar;C:\Users\ImplementLife\.m2\repository\org\tukaani\xz\1.9\xz-1.9.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\maven-archiver\3.6.0\maven-archiver-3.6.0.jar;C:\Users\ImplementLife\.m2\repository\org\codehaus\plexus\plexus-utils\3.4.2\plexus-utils-3.4.2.jar;C:\Users\ImplementLife\.m2\repository\org\apache\maven\plugins\maven-resources-plugin\3.3.0\maven-resources-plugin-3.3.0.jar;C:\Users\ImplementLife\.m2\repository\org\apache\commons\commons-lang3\3.9\commons-lang3-3.9.jar;C:\Users\ImplementLife\.m2\repository\org\apache\logging\log4j\log4j-slf4j-impl\2.22.1\log4j-slf4j-impl-2.22.1.jar;C:\Users\ImplementLife\.m2\repository\org\apache\logging\log4j\log4j-api\2.12.1\log4j-api-2.12.1.jar;C:\Users\ImplementLife\.m2\repository\org\slf4j\slf4j-api\1.7.29\slf4j-api-1.7.29.jar;C:\Users\ImplementLife\.m2\repository\org\apache\logging\log4j\log4j-core\2.12.1\log4j-core-2.12.1.jar;C:\Users\ImplementLife\.m2\repository\com\drewnoakes\metadata-extractor\2.19.0\metadata-extractor-2.19.0.jar;C:\Users\ImplementLife\.m2\repository\com\adobe\xmp\xmpcore\6.1.11\xmpcore-6.1.11.jar il.util.explorer.Boot
+Scan for: C:\
+[                                                  ] 0,67% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 2, running = 2, steals = 0, tasks = 222, submissions = 0]
+Progress: 21839 files processed
+Time 1,01 s
+[======                                            ] 12,96% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 46, tasks = 300, submissions = 0]
+Progress: 53721 files processed
+Time 2,02 s
+[=======                                           ] 14,66% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 46, tasks = 406, submissions = 0]
+Progress: 84531 files processed
+Time 3,04 s
+[========                                          ] 16,15% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 46, tasks = 672, submissions = 0]
+Progress: 117347 files processed
+Time 4,04 s
+[========                                          ] 17,60% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 78, tasks = 449, submissions = 0]
+Progress: 149957 files processed
+Time 5,04 s
+[=========                                         ] 18,62% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 92, tasks = 479, submissions = 0]
+Progress: 182399 files processed
+Time 6,04 s
+[=========                                         ] 19,59% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 3, active = 3, running = 3, steals = 99, tasks = 537, submissions = 0]
+Progress: 215651 files processed
+Time 7,05 s
+[==========                                        ] 20,61% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 35, active = 1, running = 1, steals = 1019, tasks = 0, submissions = 0]
+Progress: 254796 files processed
+Time 8,07 s
+[===========                                       ] 23,64% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 40, active = 2, running = 2, steals = 2852, tasks = 201, submissions = 0]
+Progress: 300972 files processed
+Time 9,07 s
+[============                                      ] 24,30% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 40, active = 2, running = 2, steals = 2852, tasks = 349, submissions = 0]
+Progress: 321046 files processed
+Time 10,08 s
+[==============                                    ] 28,06% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 40, active = 2, running = 2, steals = 2853, tasks = 429, submissions = 0]
+Progress: 340162 files processed
+Time 11,10 s
+[==============                                    ] 28,70% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 40, active = 2, running = 2, steals = 2853, tasks = 757, submissions = 0]
+Progress: 365676 files processed
+Time 12,10 s
+[===============                                   ] 30,65% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 11, active = 2, running = 2, steals = 4136, tasks = 3, submissions = 0]
+Progress: 397567 files processed
+Time 13,12 s
+[================                                  ] 33,35% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 8, active = 2, running = 2, steals = 4214, tasks = 548, submissions = 0]
+Progress: 421283 files processed
+Time 14,13 s
+[====================                              ] 40,45% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 3, running = 3, steals = 4313, tasks = 41, submissions = 0]
+Progress: 444626 files processed
+Time 15,13 s
+[=====================                             ] 42,35% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 12, active = 2, running = 2, steals = 4398, tasks = 390, submissions = 0]
+Progress: 461795 files processed
+Time 16,14 s
+[======================                            ] 44,16% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 12, active = 2, running = 2, steals = 4398, tasks = 1175, submissions = 0]
+Progress: 477723 files processed
+Time 17,16 s
+[=========================                         ] 50,21% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 17, active = 1, running = 1, steals = 4541, tasks = 0, submissions = 0]
+Progress: 491862 files processed
+Time 18,17 s
+[=========================                         ] 50,58% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 105, submissions = 0]
+Progress: 507407 files processed
+Time 19,18 s
+[=========================                         ] 50,78% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 169, submissions = 0]
+Progress: 521577 files processed
+Time 20,18 s
+[=========================                         ] 51,43% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 432, submissions = 0]
+Progress: 539044 files processed
+Time 21,19 s
+[=========================                         ] 51,78% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 655, submissions = 0]
+Progress: 552815 files processed
+Time 22,20 s
+[=========================                         ] 51,86% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 792, submissions = 0]
+Progress: 568104 files processed
+Time 23,20 s
+[=========================                         ] 51,88% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 939, submissions = 0]
+Progress: 582967 files processed
+Time 24,21 s
+[=========================                         ] 51,91% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1052, submissions = 0]
+Progress: 598290 files processed
+Time 25,22 s
+[=========================                         ] 51,94% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1192, submissions = 0]
+Progress: 613644 files processed
+Time 26,23 s
+[=========================                         ] 51,97% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1459, submissions = 0]
+Progress: 629440 files processed
+Time 27,24 s
+[==========================                        ] 52,02% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1378, submissions = 0]
+Progress: 644053 files processed
+Time 28,24 s
+[===========================                       ] 54,55% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 194, submissions = 0]
+Progress: 660510 files processed
+Time 29,24 s
+[===========================                       ] 55,49% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 220, submissions = 0]
+Progress: 677123 files processed
+Time 30,27 s
+[===========================                       ] 55,89% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 803, submissions = 0]
+Progress: 693363 files processed
+Time 31,27 s
+[============================                      ] 56,26% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 846, submissions = 0]
+Progress: 709979 files processed
+Time 32,28 s
+[============================                      ] 56,53% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 307, submissions = 0]
+Progress: 726245 files processed
+Time 33,28 s
+[============================                      ] 57,03% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 183, submissions = 0]
+Progress: 743111 files processed
+Time 34,28 s
+[============================                      ] 57,58% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 485, submissions = 0]
+Progress: 764652 files processed
+Time 35,28 s
+[=============================                     ] 58,53% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 330, submissions = 0]
+Progress: 786165 files processed
+Time 36,30 s
+[=============================                     ] 59,89% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 571, submissions = 0]
+Progress: 806660 files processed
+Time 37,31 s
+[==============================                    ] 60,29% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 757, submissions = 0]
+Progress: 830199 files processed
+Time 38,32 s
+[==============================                    ] 60,35% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 967, submissions = 0]
+Progress: 851681 files processed
+Time 39,33 s
+[==============================                    ] 60,47% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1032, submissions = 0]
+Progress: 872031 files processed
+Time 40,33 s
+[==============================                    ] 60,64% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1269, submissions = 0]
+Progress: 892774 files processed
+Time 41,35 s
+[==============================                    ] 60,81% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1768, submissions = 0]
+Progress: 914051 files processed
+Time 42,37 s
+[==============================                    ] 61,11% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1856, submissions = 0]
+Progress: 936192 files processed
+Time 43,37 s
+[==============================                    ] 61,32% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1995, submissions = 0]
+Progress: 951719 files processed
+Time 44,38 s
+[==============================                    ] 61,35% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 2135, submissions = 0]
+Progress: 972204 files processed
+Time 45,38 s
+[==============================                    ] 61,59% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 2055, submissions = 0]
+Progress: 993087 files processed
+Time 46,39 s
+[==============================                    ] 61,73% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 2120, submissions = 0]
+Progress: 1012830 files processed
+Time 47,40 s
+[=================================                 ] 67,89% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 867, submissions = 0]
+Progress: 1032538 files processed
+Time 48,41 s
+[==================================                ] 69,33% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1250, submissions = 0]
+Progress: 1048934 files processed
+Time 49,41 s
+[==================================                ] 69,43% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1318, submissions = 0]
+Progress: 1060854 files processed
+Time 50,42 s
+[==================================                ] 69,81% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 1158, submissions = 0]
+Progress: 1080207 files processed
+Time 51,43 s
+[==================================                ] 69,99% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 507, submissions = 0]
+Progress: 1097463 files processed
+Time 52,44 s
+[===================================               ] 71,21% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 555, submissions = 0]
+Progress: 1116984 files processed
+Time 53,46 s
+[====================================              ] 72,36% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 4580, tasks = 557, submissions = 0]
+Progress: 1137713 files processed
+Time 54,46 s
+[=====================================             ] 74,02% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 3, running = 3, steals = 4651, tasks = 80, submissions = 0]
+Progress: 1153832 files processed
+Time 55,47 s
+[=====================================             ] 74,14% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 9, active = 3, running = 3, steals = 4931, tasks = 1, submissions = 0]
+Progress: 1172326 files processed
+Time 56,47 s
+[======================================            ] 76,20% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 2, running = 2, steals = 5072, tasks = 87, submissions = 0]
+Progress: 1190825 files processed
+Time 57,48 s
+[======================================            ] 77,46% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 2, running = 2, steals = 5072, tasks = 286, submissions = 0]
+Progress: 1211290 files processed
+Time 58,48 s
+[=======================================           ] 78,49% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 2, running = 2, steals = 5077, tasks = 341, submissions = 0]
+Progress: 1233861 files processed
+Time 59,50 s
+[=======================================           ] 78,66% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 1, running = 1, steals = 5130, tasks = 12, submissions = 0]
+Progress: 1257516 files processed
+Time 60,51 s
+[=======================================           ] 79,81% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 5, active = 2, running = 2, steals = 5132, tasks = 48, submissions = 0]
+Progress: 1274681 files processed
+Time 61,52 s
+[=======================================           ] 79,83% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 3, running = 3, steals = 5132, tasks = 214, submissions = 0]
+Progress: 1287791 files processed
+Time 62,53 s
+[=======================================           ] 79,85% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 7, active = 4, running = 4, steals = 5136, tasks = 191, submissions = 0]
+Progress: 1303398 files processed
+Time 63,53 s
+[=======================================           ] 79,87% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 7, active = 4, running = 4, steals = 5137, tasks = 215, submissions = 0]
+Progress: 1319340 files processed
+Time 64,54 s
+[=======================================           ] 79,89% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 7, active = 4, running = 4, steals = 5146, tasks = 157, submissions = 0]
+Progress: 1334855 files processed
+Time 65,55 s
+[=======================================           ] 79,91% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 8, active = 4, running = 4, steals = 5368, tasks = 3, submissions = 0]
+Progress: 1348845 files processed
+Time 66,56 s
+[=======================================           ] 79,97% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 1, running = 1, steals = 5386, tasks = 66, submissions = 0]
+Progress: 1357054 files processed
+Time 67,57 s
+[========================================          ] 80,02% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 1, running = 1, steals = 5386, tasks = 190, submissions = 0]
+Progress: 1369311 files processed
+Time 68,58 s
+[============================================      ] 89,30% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 5, active = 2, running = 2, steals = 5643, tasks = 66, submissions = 0]
+Progress: 1385559 files processed
+Time 69,59 s
+[===============================================   ] 94,47% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 2, running = 2, steals = 5677, tasks = 390, submissions = 0]
+Progress: 1401774 files processed
+Time 70,60 s
+[================================================  ] 96,32% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 2, running = 2, steals = 5677, tasks = 1175, submissions = 0]
+Progress: 1417504 files processed
+Time 71,61 s
+[==================================================] 102,41% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 16, active = 1, running = 1, steals = 5824, tasks = 0, submissions = 0]
+Progress: 1432185 files processed
+Time 72,62 s
+[==================================================] 103,93% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 15, active = 2, running = 2, steals = 5867, tasks = 214, submissions = 0]
+Progress: 1450830 files processed
+Time 73,63 s
+[==================================================] 104,68% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 6, active = 3, running = 3, steals = 6136, tasks = 14, submissions = 0]
+Progress: 1471930 files processed
+Time 74,64 s
+[==================================================] 105,46% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 7, active = 2, running = 2, steals = 6387, tasks = 104, submissions = 0]
+Progress: 1495425 files processed
+Time 75,65 s
+[==================================================] 110,38% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 11, active = 2, running = 2, steals = 6929, tasks = 141, submissions = 0]
+Progress: 1515366 files processed
+Time 76,66 s
+[==================================================] 111,84% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 11, active = 3, running = 3, steals = 6931, tasks = 5038, submissions = 0]
+Progress: 1535638 files processed
+Time 77,66 s
+[==================================================] 114,41% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 11, active = 3, running = 3, steals = 6931, tasks = 4959, submissions = 0]
+Progress: 1564020 files processed
+Time 78,67 s
+[==================================================] 115,63% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 36, active = 32, running = 32, steals = 7994, tasks = 3665, submissions = 0]
+Progress: 1594096 files processed
+Time 79,69 s
+[==================================================] 115,87% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 91, active = 87, running = 87, steals = 10547, tasks = 1282, submissions = 0]
+Progress: 1647179 files processed
+Time 80,71 s
+[==================================================] 117,33% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 118, active = 116, running = 116, steals = 12020, tasks = 278, submissions = 0]
+Progress: 1690218 files processed
+Time 81,76 s
+[==================================================] 117,83% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 128, active = 124, running = 124, steals = 12887, tasks = 921, submissions = 0]
+Progress: 1698122 files processed
+Time 83,15 s
+[==================================================] 118,22% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 133, active = 129, running = 129, steals = 13889, tasks = 88, submissions = 0]
+Progress: 1706003 files processed
+Time 84,21 s
+[==================================================] 118,72% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 134, active = 118, running = 118, steals = 15906, tasks = 2314, submissions = 0]
+Progress: 1749805 files processed
+Time 85,27 s
+[==================================================] 118,85% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 189, active = 185, running = 185, steals = 18629, tasks = 1004, submissions = 0]
+Progress: 1806429 files processed
+Time 86,29 s
+[==================================================] 118,92% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 219, active = 45, running = 45, steals = 20393, tasks = 3118, submissions = 0]
+Progress: 1843112 files processed
+Time 87,29 s
+[==================================================] 119,08% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 219, active = 115, running = 115, steals = 22381, tasks = 1292, submissions = 0]
+Progress: 1888515 files processed
+Time 88,30 s
+[==================================================] 119,22% 
+java.util.concurrent.ForkJoinPool@61a9b7ab[Running, parallelism = 2, size = 4, active = 0, running = 0, steals = 24088, tasks = 0, submissions = 0]
+Progress: 1922713 files processed
+Time 89,31 s
+Done for 89,43 seconds processor 50%
+Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+	at com.formdev.flatlaf.ui.FlatTreeUI.isDropRow(FlatTreeUI.java:781)
+	at com.formdev.flatlaf.ui.FlatTreeUI.paintRow(FlatTreeUI.java:570)
+	at com.formdev.flatlaf.ui.FlatTreeUI.paint(FlatTreeUI.java:493)
+	at javax.swing.plaf.ComponentUI.update(ComponentUI.java:161)
+	at javax.swing.JComponent.paintComponent(JComponent.java:780)
+	at javax.swing.JComponent.paint(JComponent.java:1056)
+	at javax.swing.JComponent.paintToOffscreen(JComponent.java:5210)
+	at javax.swing.RepaintManager$PaintManager.paintDoubleBuffered(RepaintManager.java:1579)
+	at javax.swing.RepaintManager$PaintManager.paint(RepaintManager.java:1502)
+	at javax.swing.RepaintManager.paint(RepaintManager.java:1272)
+	at javax.swing.JComponent._paintImmediately(JComponent.java:5158)
+	at javax.swing.JComponent.paintImmediately(JComponent.java:4969)
+	at javax.swing.RepaintManager$4.run(RepaintManager.java:831)
+	at javax.swing.RepaintManager$4.run(RepaintManager.java:814)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:74)
+	at javax.swing.RepaintManager.paintDirtyRegions(RepaintManager.java:814)
+	at javax.swing.RepaintManager.paintDirtyRegions(RepaintManager.java:789)
+	at javax.swing.RepaintManager.prePaintDirtyRegions(RepaintManager.java:738)
+	at javax.swing.RepaintManager.access$1200(RepaintManager.java:64)
+	at javax.swing.RepaintManager$ProcessingRunnable.run(RepaintManager.java:1732)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:311)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:758)
+	at java.awt.EventQueue.access$500(EventQueue.java:97)
+	at java.awt.EventQueue$3.run(EventQueue.java:709)
+	at java.awt.EventQueue$3.run(EventQueue.java:703)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:74)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:728)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:205)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:116)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:105)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:93)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:82)
+
