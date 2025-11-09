@@ -1,6 +1,9 @@
 package com.il.util.ui.tabs.drt;
 
+import com.il.util.dto.FileInfo;
 import com.il.util.setvices.DropDuplicatesService;
+import com.il.util.setvices.UIService;
+import com.il.util.setvices.Util;
 import com.il.util.ui.components.ProgressWindowWrap;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -12,10 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -24,6 +28,8 @@ public class DuplicatesRemoverTabWrap {
     private DropDuplicatesService dropDuplicatesService;
     @Autowired
     private ProgressWindowWrap progressWindow;
+    @Autowired
+    private UIService uiService;
 
     private JPanel root;
     private JScrollPane sc;
@@ -32,6 +38,7 @@ public class DuplicatesRemoverTabWrap {
     private JButton btnScan;
     private JButton btnDoRemove;
     private JPanel panelResult;
+    private JLabel labelMsg;
 
     @PostConstruct
     private void init() {
@@ -40,25 +47,31 @@ public class DuplicatesRemoverTabWrap {
         progressWindow.setIndeterminate();
 
         btnChoose.addActionListener(event -> {
-            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            jfc.setDialogTitle("Choose a folder");
-            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-            int returnValue = jfc.showDialog(null, "Select");
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jfc.getSelectedFile();
-                tfPath.setText(selectedFile.getAbsolutePath());
-            }
+            tfPath.setText(uiService.chooseFolder());
         });
         btnScan.addActionListener(event -> {
             progressWindow.setVisible(true);
             String path = tfPath.getText();
-            List<List<String>> duplicatesList = dropDuplicatesService.deepSearchDuplicates(path);
-            for (List<String> duplicates : duplicatesList) {
+            List<List<FileInfo>> duplicatesList = dropDuplicatesService.deepSearchDuplicates(path);
+            for (List<FileInfo> duplicates : duplicatesList) {
                 DupRemResListItemWrap dupRemResListItemWrap = new DupRemResListItemWrap();
-                dupRemResListItemWrap.init(duplicates);
-                panelResult.add(dupRemResListItemWrap.getRoot());
+
+                java.awt.Component added = dupRemResListItemWrap.getRoot();
+                panelResult.add(added);
+                dupRemResListItemWrap.init(duplicates, () -> {
+                    panelResult.remove(added);
+                    panelResult.revalidate();
+                    panelResult.repaint();
+                });
             }
+            long totalToFree = 0;
+            for (List<FileInfo> duplicates : duplicatesList) {
+                for (int i = duplicates.size() - 1; i >= 1; i--) {
+                    FileInfo fileInfo = duplicates.get(i);
+                    totalToFree += fileInfo.getSize();
+                }
+            }
+            labelMsg.setText("Total to free space: " + Util.formatNumberWithSpaces(String.valueOf(Util.bytesToMegabytes(totalToFree))) + " MB");
             progressWindow.setVisible(false);
         });
         btnDoRemove.addActionListener(event -> {
@@ -86,7 +99,7 @@ public class DuplicatesRemoverTabWrap {
      */
     private void $$$setupUI$$$() {
         root = new JPanel();
-        root.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        root.setLayout(new GridLayoutManager(3, 1, new Insets(4, 0, 4, 4), -1, -1));
         sc = new JScrollPane();
         root.add(sc, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
@@ -101,23 +114,58 @@ public class DuplicatesRemoverTabWrap {
         panel2.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         root.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         tfPath = new JTextField();
+        Font tfPathFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, tfPath.getFont());
+        if (tfPathFont != null) tfPath.setFont(tfPathFont);
         panel2.add(tfPath, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final Spacer spacer2 = new Spacer();
         panel2.add(spacer2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         btnChoose = new JButton();
+        Font btnChooseFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, btnChoose.getFont());
+        if (btnChooseFont != null) btnChoose.setFont(btnChooseFont);
         btnChoose.setText("Choose");
         panel2.add(btnChoose, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         root.add(panel3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnScan = new JButton();
+        Font btnScanFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, btnScan.getFont());
+        if (btnScanFont != null) btnScan.setFont(btnScanFont);
         btnScan.setText("Scan");
-        panel3.add(btnScan, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(btnScan, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
-        panel3.add(spacer3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel3.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         btnDoRemove = new JButton();
+        Font btnDoRemoveFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, btnDoRemove.getFont());
+        if (btnDoRemoveFont != null) btnDoRemove.setFont(btnDoRemoveFont);
         btnDoRemove.setText("Do Remove");
-        panel3.add(btnDoRemove, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(btnDoRemove, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        labelMsg = new JLabel();
+        Font labelMsgFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, labelMsg.getFont());
+        if (labelMsgFont != null) labelMsg.setFont(labelMsgFont);
+        labelMsg.setText("");
+        panel3.add(labelMsg, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
     }
 
     /**

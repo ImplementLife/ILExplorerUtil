@@ -27,6 +27,7 @@ public class MainFrameWrap {
     @Autowired
     private DuplicatesRemoverTabWrap duplicatesRemoverTabWrap;
 
+    private JFrame frame;
     private JPanel root;
     private JPanel scannerTab;
     private JPanel duplicatesRemoverTab;
@@ -42,7 +43,7 @@ public class MainFrameWrap {
     }
 
     public void showFrame() {
-        JFrame frame = new JFrame("IL Explorer Util");
+        frame = new JFrame("IL Explorer Util");
         frame.add(root);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 600);
@@ -52,6 +53,10 @@ public class MainFrameWrap {
 
         SwingUtilities.updateComponentTreeUI(root);
         frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 
     {

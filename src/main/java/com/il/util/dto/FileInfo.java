@@ -8,6 +8,7 @@ public class FileInfo {
     private final String path;
     private long size;
     private List<FileInfo> children;
+    private String hash;
 
     public FileInfo(String path, long size) {
         this.path = path;
@@ -26,10 +27,6 @@ public class FileInfo {
         this.name = name;
     }
 
-    public long getSize() {
-        return size;
-    }
-
     public String getPath() {
         return path;
     }
@@ -37,7 +34,6 @@ public class FileInfo {
     public List<FileInfo> getChildren() {
         return children;
     }
-
     public void setChildren(List<FileInfo> children) {
         this.children = children;
     }
@@ -47,14 +43,24 @@ public class FileInfo {
         children.add(child);
     }
 
+    public long getSize() {
+        return size;
+    }
     public void setSize(long megabytes) {
         this.size = megabytes;
     }
+
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

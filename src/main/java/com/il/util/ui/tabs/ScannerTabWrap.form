@@ -97,6 +97,7 @@
             <constraints/>
             <properties>
               <editable value="false"/>
+              <font name="Monospaced" size="16"/>
               <rootVisible value="true"/>
             </properties>
           </component>

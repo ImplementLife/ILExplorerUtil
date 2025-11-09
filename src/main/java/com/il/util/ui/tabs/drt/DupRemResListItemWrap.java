@@ -1,5 +1,6 @@
 package com.il.util.ui.tabs.drt;
 
+import com.il.util.dto.FileInfo;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
@@ -11,16 +12,24 @@ import java.util.List;
 public class DupRemResListItemWrap {
     private JPanel root;
     private JPanel panelResult;
-    private List<String> duplicates;
+    private List<FileInfo> duplicates;
+    private int size;
 
-    public void init(List<String> duplicates) {
+    public void init(List<FileInfo> duplicates, Runnable rmCallback) {
         this.duplicates = duplicates;
+        size = duplicates.size();
 
         panelResult.setLayout(new BoxLayout(panelResult, BoxLayout.Y_AXIS));
 
-        for (String duplicate : duplicates) {
+        for (FileInfo duplicate : duplicates) {
             FileItemWrap fileItemWrap = new FileItemWrap();
-            fileItemWrap.init(duplicate);
+            fileItemWrap.init(duplicate, rmCallbackFileInfo -> {
+                size--;
+                if (size == 1) {
+                    root.setVisible(false);
+                    rmCallback.run();
+                }
+            });
             panelResult.add(fileItemWrap.getRoot());
         }
     }

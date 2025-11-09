@@ -1,5 +1,6 @@
 package com.il.util.setvices;
 
+import com.il.util.dto.FileInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -20,12 +21,12 @@ import java.util.stream.Collectors;
 public class DropDuplicatesService {
     private static final Set<String> MEDIA_EXTENSIONS = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif", "mp4", "mp3", "wav"));
 
-    public List<List<String>> deepSearchDuplicates(String pathRootFolder) {
-        Map<String, List<String>> hashMap = new HashMap<>();
+    public List<List<FileInfo>> deepSearchDuplicates(String pathRootFolder) {
+        Map<String, List<FileInfo>> hashMap = new HashMap<>();
         findDuplicates(new File(pathRootFolder), hashMap);
 
-        List<List<String>> duplicates = new ArrayList<>();
-        for (Map.Entry<String, List<String>> entry : hashMap.entrySet()) {
+        List<List<FileInfo>> duplicates = new ArrayList<>();
+        for (Map.Entry<String, List<FileInfo>> entry : hashMap.entrySet()) {
             if (entry.getValue().size() > 1) {
                 duplicates.add(entry.getValue());
             }
@@ -33,7 +34,7 @@ public class DropDuplicatesService {
         return duplicates;
     }
 
-    private void findDuplicates(File folder, Map<String, List<String>> hashMap) {
+    private void findDuplicates(File folder, Map<String, List<FileInfo>> hashMap) {
         if (folder.isDirectory()) {
             for (File file : Objects.requireNonNull(folder.listFiles())) {
                 if (file.isDirectory()) {
@@ -41,7 +42,11 @@ public class DropDuplicatesService {
                 } else if (isMediaFile(file)) {
                     try {
                         String fileHash = getFileHash(file);
-                        hashMap.computeIfAbsent(fileHash, k -> new ArrayList<>()).add(file.getAbsolutePath());
+                        FileInfo fileInfo = new FileInfo(file.getAbsolutePath());
+                        fileInfo.setName(file.getName());
+                        fileInfo.setHash(fileHash);
+                        fileInfo.setSize(file.length());
+                        hashMap.computeIfAbsent(fileHash, k -> new ArrayList<>()).add(fileInfo);
                     } catch (IOException | NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }

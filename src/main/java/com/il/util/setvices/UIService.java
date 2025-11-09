@@ -1,16 +1,15 @@
 package com.il.util.setvices;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
-import com.il.util.except.NoFileChosen;
 import com.il.util.ui.MainFrameWrap;
 import com.il.util.ui.components.ErrorDialog;
+import jnafilechooser.api.WindowsFolderBrowser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
@@ -64,17 +63,9 @@ public class UIService {
     }
 
     public String chooseFolder() {
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Choose a folder");
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int returnValue = jfc.showDialog(null, "Select");
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jfc.getSelectedFile();
-            return selectedFile.getAbsolutePath();
-        } else {
-            throw new NoFileChosen();
-        }
+        WindowsFolderBrowser choose_folder = new WindowsFolderBrowser("Choose Folder");
+        File file1 = choose_folder.showDialog(mainFrameWrap.getFrame());
+        return file1.getAbsolutePath();
     }
 
 
