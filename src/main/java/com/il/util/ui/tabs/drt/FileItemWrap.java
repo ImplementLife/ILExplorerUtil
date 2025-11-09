@@ -27,9 +27,8 @@ public class FileItemWrap {
         abstract void onClick();
     }
 
-    public void init(FileInfo fileInfo, Consumer<FileInfo> removeCallback) {
-        labelName.setText(fileInfo.getPath());
-        labelName.setText("<html><a href=''>" + fileInfo.getPath() + "</a></html>");
+    public void init(FileInfo fileInfo, String pathForCut, Consumer<FileInfo> removeCallback) {
+        labelName.setText("<html><a href=''>" + fileInfo.getPath().replace(pathForCut, "") + "</a></html>");
         labelName.setCursor(new Cursor(Cursor.HAND_CURSOR));
         labelName.addMouseListener(new MouseAdapter() {
             @Override

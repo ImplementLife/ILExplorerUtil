@@ -15,7 +15,7 @@ public class DupRemResListItemWrap {
     private List<FileInfo> duplicates;
     private int size;
 
-    public void init(List<FileInfo> duplicates, Runnable rmCallback) {
+    public void init(List<FileInfo> duplicates, String pathForCut, Runnable rmCallback) {
         this.duplicates = duplicates;
         size = duplicates.size();
 
@@ -23,7 +23,7 @@ public class DupRemResListItemWrap {
 
         for (FileInfo duplicate : duplicates) {
             FileItemWrap fileItemWrap = new FileItemWrap();
-            fileItemWrap.init(duplicate, rmCallbackFileInfo -> {
+            fileItemWrap.init(duplicate, pathForCut, rmCallbackFileInfo -> {
                 size--;
                 if (size == 1) {
                     root.setVisible(false);

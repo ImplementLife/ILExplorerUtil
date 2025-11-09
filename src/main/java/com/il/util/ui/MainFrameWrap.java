@@ -75,11 +75,11 @@ public class MainFrameWrap {
      */
     private void $$$setupUI$$$() {
         root = new JPanel();
-        root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 8, 8, 8), -1, -1));
         tabWrap = new JTabbedPane();
         tabWrap.setAlignmentX(0.5f);
         tabWrap.setAlignmentY(0.5f);
-        tabWrap.setTabPlacement(2);
+        tabWrap.setTabPlacement(1);
         root.add(tabWrap, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         scannerTab = new JPanel();
         scannerTab.setLayout(new BorderLayout(0, 0));

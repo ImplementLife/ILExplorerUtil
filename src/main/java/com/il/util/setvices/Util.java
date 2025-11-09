@@ -9,10 +9,9 @@ public abstract class Util {
         long megabytes = (kilobytes / 1024);
         return String.format(Locale.US, "%,d", megabytes).replace(",", " ");
     }
-    public static long bytesToMegabytes(long bytes) {
-        long kilobytes = (bytes / 1024);
-        long megabytes = (kilobytes / 1024);
-        return megabytes;
+    public static double bytesToMegabytes(long bytes) {
+        double megabytes = bytes / 1024.0 / 1024.0;
+        return Math.round(megabytes * 100.0) / 100.0;
     }
     public static void threadSleep(long time) {
         try {
