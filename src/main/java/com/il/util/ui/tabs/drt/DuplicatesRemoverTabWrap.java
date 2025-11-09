@@ -59,24 +59,31 @@ public class DuplicatesRemoverTabWrap {
                 java.awt.Component added = dupRemResListItemWrap.getRoot();
                 panelResult.add(added);
                 dupRemResListItemWrap.init(duplicates, path.substring(0, path.lastIndexOf("\\") + 1), () -> {
+                    duplicatesList.remove(duplicates);
+                    updateMsg(duplicatesList);
+
                     panelResult.remove(added);
                     panelResult.revalidate();
                     panelResult.repaint();
                 });
             }
-            long totalToFree = 0;
-            for (List<FileInfo> duplicates : duplicatesList) {
-                for (int i = duplicates.size() - 1; i >= 1; i--) {
-                    FileInfo fileInfo = duplicates.get(i);
-                    totalToFree += fileInfo.getSize();
-                }
-            }
-            labelMsg.setText("Total to free space: " + Util.formatNumberWithSpaces(String.valueOf(Util.bytesToMegabytes(totalToFree))) + " MB   Duplicates count: " + duplicatesList.size());
+            updateMsg(duplicatesList);
             progressWindow.setVisible(false);
         });
         btnDoRemove.addActionListener(event -> {
 
         });
+    }
+
+    private void updateMsg(List<List<FileInfo>> duplicatesList) {
+        long totalToFree = 0;
+        for (List<FileInfo> duplicates : duplicatesList) {
+            for (int i = duplicates.size() - 1; i >= 1; i--) {
+                FileInfo fileInfo = duplicates.get(i);
+                totalToFree += fileInfo.getSize();
+            }
+        }
+        labelMsg.setText("Total to free space: " + Util.formatNumberWithSpaces(String.valueOf(Util.bytesToMegabytes(totalToFree))) + " MB   Duplicates count: " + duplicatesList.size());
     }
 
     public JPanel getRoot() {
