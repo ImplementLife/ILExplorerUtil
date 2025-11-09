@@ -50,25 +50,34 @@ public class DuplicatesRemoverTabWrap {
             tfPath.setText(uiService.chooseFolder());
         });
         btnScan.addActionListener(event -> {
-            progressWindow.setVisible(true);
             String path = tfPath.getText();
-            List<List<FileInfo>> duplicatesList = dropDuplicatesService.deepSearchDuplicates(path);
-            for (List<FileInfo> duplicates : duplicatesList) {
-                DupRemResListItemWrap dupRemResListItemWrap = new DupRemResListItemWrap();
+            panelResult.removeAll();
+            panelResult.revalidate();
+            panelResult.repaint();
 
-                java.awt.Component added = dupRemResListItemWrap.getRoot();
-                panelResult.add(added);
-                dupRemResListItemWrap.init(duplicates, path.substring(0, path.lastIndexOf("\\") + 1), () -> {
-                    duplicatesList.remove(duplicates);
+            progressWindow.setVisible(true);
+            progressWindow.setIndeterminate();
+
+            new Thread(() -> {
+                List<List<FileInfo>> duplicatesList = dropDuplicatesService.deepSearchDuplicates(path);
+
+                SwingUtilities.invokeLater(() -> {
+                    for (List<FileInfo> duplicates : duplicatesList) {
+                        DupRemResListItemWrap dupRemResListItemWrap = new DupRemResListItemWrap();
+                        java.awt.Component added = dupRemResListItemWrap.getRoot();
+                        panelResult.add(added);
+                        dupRemResListItemWrap.init(duplicates, path.substring(0, path.lastIndexOf("\\") + 1), () -> {
+                            duplicatesList.remove(duplicates);
+                            updateMsg(duplicatesList);
+                            panelResult.remove(added);
+                            panelResult.revalidate();
+                            panelResult.repaint();
+                        });
+                    }
                     updateMsg(duplicatesList);
-
-                    panelResult.remove(added);
-                    panelResult.revalidate();
-                    panelResult.repaint();
+                    progressWindow.setVisible(false);
                 });
-            }
-            updateMsg(duplicatesList);
-            progressWindow.setVisible(false);
+            }).start();
         });
         btnDoRemove.addActionListener(event -> {
 
