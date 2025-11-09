@@ -6,10 +6,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -26,11 +25,44 @@ public class DropDuplicatesService {
         findDuplicates(new File(pathRootFolder), hashMap);
 
         List<List<FileInfo>> duplicates = new ArrayList<>();
-        for (Map.Entry<String, List<FileInfo>> entry : hashMap.entrySet()) {
-            if (entry.getValue().size() > 1) {
-                duplicates.add(entry.getValue());
+
+        Iterator<Map.Entry<String, List<FileInfo>>> it = hashMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, List<FileInfo>> entry = it.next();
+            List<FileInfo> group = new ArrayList<>(entry.getValue());
+            if (group.size() <= 1) {
+                it.remove();
+                continue;
+            }
+
+            List<FileInfo> confirmedDuplicates = new ArrayList<>();
+            while (!group.isEmpty()) {
+                FileInfo fi = group.remove(0);
+                File file = new File(fi.getPath());
+                confirmedDuplicates.add(fi);
+
+                Iterator<FileInfo> innerIt = group.iterator();
+                while (innerIt.hasNext()) {
+                    FileInfo otherFi = innerIt.next();
+                    File otherFile = new File(otherFi.getPath());
+                    try {
+                        if (filesAreEqual(file, otherFile)) {
+                            confirmedDuplicates.add(otherFi);
+                            innerIt.remove();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if (confirmedDuplicates.size() > 1) {
+                duplicates.add(confirmedDuplicates);
+            } else {
+                it.remove();
             }
         }
+
         return duplicates;
     }
 
@@ -68,10 +100,33 @@ public class DropDuplicatesService {
         return fileName.substring(lastIndexOfDot + 1);
     }
 
+    private boolean filesAreEqual(File f1, File f2) throws IOException {
+        if (f1.length() != f2.length()) return false;
+
+        try (InputStream is1 = new BufferedInputStream(new FileInputStream(f1));
+             InputStream is2 = new BufferedInputStream(new FileInputStream(f2))) {
+
+            int b1, b2;
+            while ((b1 = is1.read()) != -1) {
+                b2 = is2.read();
+                if (b1 != b2) return false;
+            }
+            return true;
+        }
+    }
+
+
     private String getFileHash(File file) throws IOException, NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-        byte[] hashBytes = digest.digest(fileBytes);
+        try (
+            InputStream is = Files.newInputStream(file.toPath());
+            DigestInputStream dis = new DigestInputStream(is, digest)
+        ) {
+            byte[] buffer = new byte[8192];
+            while (dis.read(buffer) != -1) { }
+        }
+        byte[] hashBytes = digest.digest();
+
         StringBuilder sb = new StringBuilder();
         for (byte b : hashBytes) {
             sb.append(String.format("%02x", b));

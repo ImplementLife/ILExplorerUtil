@@ -22,6 +22,7 @@ public class FileItemWrap {
     private JLabel labelSize;
     private JLabel labelBtnPreview;
     private JButton btnDelete;
+    private JCheckBox checkBox1;
 
     private static abstract class SimpleClickAdapter extends MouseAdapter {
         abstract void onClick();
@@ -99,7 +100,7 @@ public class FileItemWrap {
      */
     private void $$$setupUI$$$() {
         root = new JPanel();
-        root.setLayout(new GridLayoutManager(1, 5, new Insets(4, 0, 4, 0), -1, -1));
+        root.setLayout(new GridLayoutManager(1, 6, new Insets(4, 0, 4, 0), -1, -1));
         labelName = new JLabel();
         Font labelNameFont = this.$$$getFont$$$("JetBrains Mono", -1, 12, labelName.getFont());
         if (labelNameFont != null) labelName.setFont(labelNameFont);
@@ -113,18 +114,21 @@ public class FileItemWrap {
         labelSize.setHorizontalAlignment(4);
         labelSize.setHorizontalTextPosition(10);
         labelSize.setText("<size>");
-        root.add(labelSize, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), null, null, 0, false));
+        root.add(labelSize, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), null, null, 0, false));
         labelBtnPreview = new JLabel();
         Font labelBtnPreviewFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, labelBtnPreview.getFont());
         if (labelBtnPreviewFont != null) labelBtnPreview.setFont(labelBtnPreviewFont);
         labelBtnPreview.setForeground(new Color(-14069829));
         labelBtnPreview.setText("Preview");
-        root.add(labelBtnPreview, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        root.add(labelBtnPreview, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btnDelete = new JButton();
         Font btnDeleteFont = this.$$$getFont$$$("JetBrains Mono", -1, 14, btnDelete.getFont());
         if (btnDeleteFont != null) btnDelete.setFont(btnDeleteFont);
         btnDelete.setText("Delete");
-        root.add(btnDelete, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        root.add(btnDelete, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        checkBox1 = new JCheckBox();
+        checkBox1.setText("");
+        root.add(checkBox1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
