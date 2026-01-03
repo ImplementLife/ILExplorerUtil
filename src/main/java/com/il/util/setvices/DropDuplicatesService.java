@@ -12,6 +12,8 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +21,16 @@ import java.util.stream.Collectors;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DropDuplicatesService {
     private static final Set<String> MEDIA_EXTENSIONS = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif", "mp4", "mp3", "wav"));
+
+    private final ForkJoinPool forkJoinPool = new ForkJoinPool(3);
+    private final int filesPerThreadMaxCount = 15;
+    private class FilesInfoTask extends RecursiveTask<List<FileInfo>> {
+        @Override
+        protected List<FileInfo> compute() {
+
+            return null;
+        }
+    }
 
     public List<List<FileInfo>> deepSearchDuplicates(String pathRootFolder) {
         Map<String, List<FileInfo>> hashMap = new HashMap<>();

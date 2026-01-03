@@ -44,8 +44,12 @@ public class ProgressWindowWrap {
     }
 
     public void updateProgress(double currentSize) {
-        progressBar.setValue((int) (currentSize * 100));
-        progressBar.updateUI();
+        progressBar.setStringPainted(true);
+        SwingUtilities.invokeLater(() -> {
+            int value = (int) (currentSize * 100);
+            progressBar.setValue(value);
+            progressBar.setString(value + "%");
+        });
     }
 
     public void setOnCancelAction(Runnable action) {

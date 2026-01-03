@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
@@ -123,6 +124,9 @@ public class ScannerService {
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
                 if (files == null) return null;
+
+                // filter symlink
+                files = Arrays.stream(files).filter(f -> !Files.isSymbolicLink(f.toPath())).collect(Collectors.toList()).toArray(new File[]{});
 
                 long size = 0;
                 FileInfo fileInfo = new FileInfo(file.getAbsolutePath(), file.getName());

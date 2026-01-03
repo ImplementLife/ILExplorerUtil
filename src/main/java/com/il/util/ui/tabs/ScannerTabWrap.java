@@ -112,13 +112,12 @@ public class ScannerTabWrap {
     }
 
     public void fill(FileInfo rootFI) {
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("{root}");
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
 
         fillTree(rootFI, rootNode);
         tree.setVisible(true);
         tree.setModel(new DefaultTreeModel(rootNode, false));
         addContextMenu();
-        tree.updateUI();
     }
 
     private void addContextMenu() {
@@ -152,35 +151,33 @@ public class ScannerTabWrap {
     }
 
     private void setDeleteAction(JMenuItem item) {
-        item.addActionListener(e1 -> {
+        item.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(root, "Do you Confirm DELETE?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 
-            if (result == JOptionPane.YES_OPTION) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-                if (selectedNode != null) {
-                    TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
-                    String nodePath = node.fi.getPath();
-                    if (nodePath != null) {
-                        File fileToDelete = new File(nodePath);
-                        if (fileToDelete.isDirectory()) {
-                            File[] files = fileToDelete.listFiles();
-                            if (files != null && files.length > 0) {
-                                delete(files);
-                            }
-                        }
-                        boolean delete = fileToDelete.delete();
+            if (result != JOptionPane.YES_OPTION) return;
 
-                        if (delete) {
-                            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
-                            parent.remove(selectedNode);
-                            selectedNode.setParent(null);
-                            tree.updateUI();
-                        }
-                    }
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            if (selectedNode == null) return;
+
+            TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
+            File fileToDelete = new File(node.fi.getPath());
+
+            if (fileToDelete.isDirectory()) {
+                File[] files = fileToDelete.listFiles();
+                if (files != null) {
+                    delete(files);
                 }
+            }
+
+            if (!fileToDelete.delete()) return;
+
+            DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+            if (selectedNode.getParent() != null) {
+                model.removeNodeFromParent(selectedNode);
             }
         });
     }
+
 
     private void delete(File[] files) {
         for (File file : files) {
@@ -213,27 +210,27 @@ public class ScannerTabWrap {
     }
 
     private void setRefreshAction(JMenuItem item) {
-        item.addActionListener(e1 -> {
+        item.addActionListener(e -> {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            if (selectedNode != null) {
-                TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
-                String nodePath = node.fi.getPath();
+            if (selectedNode == null) return;
 
-                File file = new File(nodePath);
-                if (file.exists()) {
-                    selectedNode.removeAllChildren();
-                    ScannerService scannerService = new ScannerService();
-                    FileInfo scan = scannerService.scan(nodePath);
-                    if (Util.bytesToMegabytes(scan.getSize()) > maxMb) {
-                        fillTree(scan, selectedNode);
-                        tree.updateUI();
-                    }
-                } else {
-                    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode.getParent();
-                    parent.remove(selectedNode);
-                    selectedNode.setParent(null);
-                    tree.updateUI();
+            DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+            TreeNodeFileInfo node = (TreeNodeFileInfo) selectedNode.getUserObject();
+            File file = new File(node.fi.getPath());
+
+            if (file.exists()) {
+                selectedNode.removeAllChildren();
+
+                ScannerService scannerService = new ScannerService();
+                FileInfo scan = scannerService.scan(file.getPath());
+
+                if (Util.bytesToMegabytes(scan.getSize()) > maxMb) {
+                    fillTree(scan, selectedNode);
                 }
+                model.nodeStructureChanged(selectedNode);
+            }
+            else if (selectedNode.getParent() != null) {
+                model.removeNodeFromParent(selectedNode);
             }
         });
     }
@@ -242,13 +239,13 @@ public class ScannerTabWrap {
         rootNode.setUserObject(new TreeNodeFileInfo(rootFI));
 
         List<FileInfo> children = rootFI.getChildren();
-        if (children != null && children.size() > 0) {
-            for (FileInfo child : children) {
-                if (Util.bytesToMegabytes(child.getSize()) > maxMb) {
-                    DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFileInfo(child));
-                    rootNode.add(node);
-                    fillTree(child, node);
-                }
+        if (children == null) return;
+
+        for (FileInfo child : children) {
+            if (Util.bytesToMegabytes(child.getSize()) > maxMb) {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeNodeFileInfo(child));
+                rootNode.add(node);
+                fillTree(child, node);
             }
         }
     }
