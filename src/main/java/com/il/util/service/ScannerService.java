@@ -1,6 +1,7 @@
 package com.il.util.service;
 
 import com.il.util.dto.FileInfo;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +15,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,40 +22,29 @@ import java.util.stream.Collectors;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ScannerService {
     private boolean inProcess;
-    private Consumer<Double> listener;
+    private final List<ProgressView> progressListeners = new ArrayList<>();
 
     private final ForkJoinPool forkJoinPool = new ForkJoinPool(3);
     private final AtomicLong progressCounter = new AtomicLong(0);
     private AtomicLong totalCalculatedSize = new AtomicLong(0);
     private final int filesPerThreadMaxCount = 15;
 
-    public void printProgressBar(double progress) {
-        int width = 50; // Width of the progress bar
-
-        // Calculate number of characters representing progress
-        int progressChars = (int) (progress * width);
-
-        // Draw progress bar
-        StringBuilder progressBar = new StringBuilder();
-        progressBar.append("[");
-        for (int i = 0; i < width; i++) {
-            if (i < progressChars) {
-                progressBar.append("=");
-            } else {
-                progressBar.append(" ");
-            }
-        }
-        progressBar.append("] ");
-        progressBar.append(String.format("%.2f", progress * 100)).append("% ");
-
-        log.info(progressBar.toString());
-        log.info(forkJoinPool.toString());
-        log.info("Progress: {} files processed", progressCounter.get());
+    public ScannerService() {
+        addProgressListener(new ConsoleProgressView());
     }
 
-    public void addProgressListener(Consumer<Double> listener) {
-        this.listener = listener;
+    public void addProgressListener(ProgressView listener) {
+        this.progressListeners.add(listener);
     }
+
+    public void cancelCurrentScan() {
+        inProcess = false;
+    }
+
+    public boolean isInProcess() {
+        return inProcess;
+    }
+
 
     public FileInfo scan(String path) {
         File file = new File(path);
@@ -75,11 +64,15 @@ public class ScannerService {
                 Util.threadSleep(3000);
                 double progress = (double) totalCalculatedSize.get() / totalSize;
                 if (inProcess) {
-                    if (listener != null) {
-                        listener.accept(progress);
+                    ProgressView.ProgressInfo progressInfo = new ProgressView.ProgressInfo();
+                    progressInfo.setProgress(progress);
+                    progressInfo.setTime((System.nanoTime() - timeStart) / 1_000_000_000.0);
+                    progressInfo.setFilesProcessed(progressCounter.get());
+                    progressInfo.setForkJoinPoolStatus(forkJoinPool.toString());
+
+                    for (ProgressView listener : progressListeners) {
+                        listener.notify(progressInfo);
                     }
-                    printProgressBar(progress);
-                    log.info(String.format("Time %.2f s\n", (System.nanoTime() - timeStart) / 1_000_000_000.0));
                 }
             }
         });
@@ -94,13 +87,12 @@ public class ScannerService {
         return treeFI;
     }
 
-    public void cancelCurrentScan() {
-        inProcess = false;
+    private FileInfo getTreeFI(File file) {
+        ArrayList<File> files = new ArrayList<>();
+        files.add(file);
+        return forkJoinPool.invoke(new FilesInfoTask(files)).get(0);
     }
 
-    public boolean isInProcess() {
-        return inProcess;
-    }
 
     private class FilesInfoTask extends RecursiveTask<List<FileInfo>> {
         private final List<File> files;
@@ -181,9 +173,16 @@ public class ScannerService {
         }
     }
 
-    private FileInfo getTreeFI(File file) {
-        ArrayList<File> files = new ArrayList<>();
-        files.add(file);
-        return forkJoinPool.invoke(new FilesInfoTask(files)).get(0);
+
+    public interface ProgressView {
+        void notify(ProgressInfo info);
+
+        @Data
+        class ProgressInfo {
+            private double progress;
+            private double time;
+            private String forkJoinPoolStatus;
+            private long filesProcessed;
+        }
     }
 }

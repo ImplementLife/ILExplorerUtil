@@ -1,6 +1,7 @@
 package com.il.util.ui.component;
 
 import com.il.util.service.ResourceService;
+import com.il.util.service.ScannerService;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -43,10 +44,10 @@ public class ProgressWindowWrap {
         progressBar.setIndeterminate(true);
     }
 
-    public void updateProgress(double currentSize) {
+    public void updateProgress(ScannerService.ProgressView.ProgressInfo progressInfo) {
         progressBar.setStringPainted(true);
         SwingUtilities.invokeLater(() -> {
-            int value = (int) (currentSize * 100);
+            int value = (int) (progressInfo.getProgress() * 100);
             progressBar.setValue(value);
             progressBar.setString(value + "%");
         });
