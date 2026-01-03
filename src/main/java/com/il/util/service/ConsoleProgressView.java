@@ -4,7 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ConsoleProgressView implements ScannerService.ProgressView {
+    private long lastLogTime = 0;
+
     public void notify(ProgressInfo info) {
+        long now = System.currentTimeMillis();
+        if (now - lastLogTime < 3000) return;
+        lastLogTime = now;
+
         int width = 50; // Width of the progress bar
 
         // Calculate number of characters representing progress
@@ -26,6 +32,6 @@ public class ConsoleProgressView implements ScannerService.ProgressView {
         log.info(progressBar.toString());
         log.info(info.getForkJoinPoolStatus());
         log.info("Progress: {} files processed", info.getFilesProcessed());
-        log.info(String.format("Time %.2f s\n", info.getTime()));
+        log.info(String.format("Time %s s\n", info.getTime()));
     }
 }

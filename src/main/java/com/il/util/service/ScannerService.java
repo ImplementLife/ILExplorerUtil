@@ -61,12 +61,12 @@ public class ScannerService {
         inProcess = true;
         CompletableFuture.runAsync(() -> {
             while (inProcess) {
-                Util.threadSleep(3000);
+                Util.threadSleep(500);
                 double progress = (double) totalCalculatedSize.get() / totalSize;
                 if (inProcess) {
                     ProgressView.ProgressInfo progressInfo = new ProgressView.ProgressInfo();
                     progressInfo.setProgress(progress);
-                    progressInfo.setTime((System.nanoTime() - timeStart) / 1_000_000_000.0);
+                    progressInfo.setTime((int) ((System.nanoTime() - timeStart) / 1_000_000_000.0));
                     progressInfo.setFilesProcessed(progressCounter.get());
                     progressInfo.setForkJoinPoolStatus(forkJoinPool.toString());
 
@@ -180,7 +180,7 @@ public class ScannerService {
         @Data
         class ProgressInfo {
             private double progress;
-            private double time;
+            private int time;
             private String forkJoinPoolStatus;
             private long filesProcessed;
         }
