@@ -1,6 +1,6 @@
 package com.il.util;
 
-import com.il.util.setvices.UIService;
+import com.il.util.service.UIService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;

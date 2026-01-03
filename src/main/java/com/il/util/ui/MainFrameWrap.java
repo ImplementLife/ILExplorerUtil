@@ -1,9 +1,9 @@
 package com.il.util.ui;
 
-import com.il.util.setvices.ResourceService;
-import com.il.util.ui.tabs.FileRenameTabWrap;
-import com.il.util.ui.tabs.ScannerTabWrap;
-import com.il.util.ui.tabs.drt.DuplicatesRemoverTabWrap;
+import com.il.util.service.ResourceService;
+import com.il.util.ui.tab.FileRenameTabWrap;
+import com.il.util.ui.tab.ScannerTabWrap;
+import com.il.util.ui.tab.drt.DuplicatesRemoverTabWrap;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.springframework.beans.factory.annotation.Autowired;
